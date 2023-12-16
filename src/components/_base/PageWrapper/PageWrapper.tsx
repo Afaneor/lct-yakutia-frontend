@@ -14,6 +14,7 @@ import {
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
 import EmptyData from '../EmptyData/EmptyData'
 import { NavLink } from 'react-router-dom'
+import { LayoutLoading } from 'src/components'
 
 const { Content } = Layout
 const { Title, Text } = Typography
@@ -23,6 +24,7 @@ export interface BreadCrumbItemProps {
   title: React.ReactNode
 }
 interface PageWrapperProps {
+  isLoading?: boolean
   noEmptyData?: boolean
   title?: string
   description?: string
@@ -33,6 +35,7 @@ interface PageWrapperProps {
 
 export const PageWrapper: FCC<PageWrapperProps> = ({
   actions,
+  isLoading,
   noEmptyData,
   title,
   children,
@@ -92,7 +95,7 @@ export const PageWrapper: FCC<PageWrapperProps> = ({
           </div>
         </div>
         {!noEmptyData && itemsCount === 0 ? <EmptyData /> : null}
-        {children}
+        {isLoading ? <LayoutLoading /> : children}
       </Content>
     </Layout>
   )

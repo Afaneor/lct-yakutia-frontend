@@ -29,6 +29,7 @@ export const ProductsPage: FCC = () => {
             id={item.id}
             title={item.name}
             description={item.description}
+            projects={item.projects}
             extra={<SourceLink link={item.link} />}
           />
         </Col>

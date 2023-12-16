@@ -2,12 +2,13 @@ import React, { ReactNode } from 'react'
 import { FCC } from 'src/types'
 import PageWrapper from '../../../components/_base/PageWrapper/PageWrapper'
 import { useTranslation } from 'src/hooks'
-import { Card, Col, Form, message, Modal, Row } from 'antd'
+import { Card, Col, Form, Input, message, Modal, Row, Space } from 'antd'
 import EntityCreation from 'src/components/_base/EntityCreateModal/EntityCreateModal'
 import { useInfinityFetchData } from 'src/services/base/useInfinityFetchData'
 import { MoreBtn } from 'src/components'
 import { useCreateItem, useDeleteItem } from 'src/services/base/hooks'
 import { BaseModel } from 'src/models'
+import debounce from 'lodash/debounce'
 
 interface EntityItemsPageWrapperProps<T> {
   pageTitle?: string
@@ -40,6 +41,7 @@ export const EntityItemsPageWrapperPage: FCC<
     isFetching,
     isLoading,
     hasNextPage,
+    setFilters,
   }: any = useInfinityFetchData({
     model: MODEL,
     defFilters: {},
@@ -77,13 +79,22 @@ export const EntityItemsPageWrapperPage: FCC<
     })
   }
 
+  const handleDebounceSearch = React.useCallback(
+    debounce((value: string) => {
+      setFilters({ search: value })
+    }, 500),
+    []
+  )
+
   return (
     <PageWrapper
+      isLoading={isLoading || isFetching}
       title={pageTitle}
       itemsCount={dataCount}
       actions={
-        <>
+        <Space>
           {actions}
+          {/*если передаем форму, то значит нужно вызывать диалог создания*/}
           {formItemsRender ? (
             <EntityCreation
               showModal={setIsModalVisible}
@@ -94,7 +105,14 @@ export const EntityItemsPageWrapperPage: FCC<
               onCreate={handleCreate}
             />
           ) : null}
-        </>
+          <Input
+            placeholder={tF('Поиск')}
+            allowClear
+            onChange={(e) => {
+              handleDebounceSearch(e.target.value)
+            }}
+          />
+        </Space>
       }
       breadcrumbs={breadcrumbs}
     >
