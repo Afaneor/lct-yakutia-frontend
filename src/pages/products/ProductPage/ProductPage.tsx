@@ -1,21 +1,20 @@
 import React from 'react'
-import styles from './ProductPage.module.scss'
 import { FCC } from 'src/types'
 import { useTranslation } from 'src/hooks'
 import { CardDetailSection, PageWrapper } from 'src/components'
-import { Col, Row } from 'antd'
+import { Col, Row, Typography } from 'antd'
 import { ProductsModel } from 'src/models'
 import { useEntityPage } from 'src/pages/hooks/useEntityPage'
-import EditableMarkdown from 'src/components/_base/EditableMarkdown/EditableMarkdown'
-import { ProjectsRoutesNames } from 'src/routes/projectsRoutes'
-
+import { ProductsRoutesNames } from 'src/routes/productsRoutes'
+import SourceLink from '../../../components/_base/SourceLink/SourceLink'
+const { Text } = Typography
 interface ProductPageProps {
   prop?: any
 }
 
 const model = ProductsModel
 export const ProductPage: FCC<ProductPageProps> = ({ prop }) => {
-  const { t, tF } = useTranslation()
+  const { t } = useTranslation()
   const {
     data,
     refetch,
@@ -32,8 +31,8 @@ export const ProductPage: FCC<ProductPageProps> = ({ prop }) => {
       title={data?.data?.name}
       breadcrumbs={[
         {
-          title: t('Проекты'),
-          href: `/${ProjectsRoutesNames.PROJECTS}`,
+          title: t('Продукты'),
+          href: `/${ProductsRoutesNames.PRODUCTS}`,
         },
         {
           title: data?.data?.name,
@@ -42,14 +41,21 @@ export const ProductPage: FCC<ProductPageProps> = ({ prop }) => {
     >
       <>
         <Row gutter={[16, 16]}>
-          <Col xs={24} xl={12}>
-            <CardDetailSection title={'Описание'}>
-              {data?.data ? (
-                <EditableMarkdown
-                  text={data?.data?.description}
-                  onSave={(text) => handleUpdate('description', text)}
-                />
-              ) : null}
+          <Col xs={24}>
+            <CardDetailSection
+              title={'Описание'}
+              imageUrl={data?.data?.image}
+              extra={<SourceLink link={data?.data?.link} />}
+            >
+              <Text>{data?.data?.description}</Text>
+            </CardDetailSection>
+          </Col>
+          <Col xs={24}>
+            <CardDetailSection
+              title={'Проекты, в которых используется продукт'}
+              extra={<SourceLink link={data?.data?.link} />}
+            >
+              <Text>{data?.data?.description}</Text>
             </CardDetailSection>
           </Col>
         </Row>

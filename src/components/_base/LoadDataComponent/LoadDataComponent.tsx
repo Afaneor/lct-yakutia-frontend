@@ -90,13 +90,6 @@ export const LoadDataComponent: React.FC<LoadDataComponentProps> = ({
         <Button icon={<UploadOutlined />}>Выберите файл</Button>
       </Upload>
       <p style={{ marginTop: '10px' }}>или перетащите его сюда</p>
-      <span
-        style={{
-          color: 'red',
-        }}
-      >
-        Сделать три таба монга постргя файлы
-      </span>
     </div>
   )
 }

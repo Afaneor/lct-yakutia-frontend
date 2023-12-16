@@ -2,9 +2,8 @@ import React from 'react'
 import { FCC } from 'src/types'
 import { useTranslation } from 'src/hooks'
 import { Col } from 'antd'
-import { ProductsModel } from 'src/models/Products'
-import { EntityItemsPageWrapperPage } from 'src/components'
-import { ProjectFields } from 'src/models'
+import { ProductsFields, ProductsModel } from 'src/models/Products'
+import { EntityItemsPageWrapperPage, SourceLink } from 'src/components'
 import { ProductsRoutesNames } from 'src/routes/productsRoutes'
 import { ProductCard } from 'src/components/products/ProductCard'
 
@@ -24,13 +23,13 @@ export const ProductsPage: FCC = () => {
           title: PageTitle,
         },
       ]}
-      itemsRender={(item: ProjectFields, onDelete) => (
+      itemsRender={(item: ProductsFields) => (
         <Col key={item.id} xs={24} md={12} xl={8}>
           <ProductCard
             id={item.id}
             title={item.name}
             description={item.description}
-            onDelete={onDelete}
+            extra={<SourceLink link={item.link} />}
           />
         </Col>
       )}

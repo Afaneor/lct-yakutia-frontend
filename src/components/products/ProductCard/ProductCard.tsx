@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react'
 import { FCC } from 'src/types'
-import { Button, Card, Spin, Typography } from 'antd'
+import { Button, Card, Space, Spin, Typography } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { DeleteOutlined } from '@ant-design/icons'
 import { ProductsRoutesNames } from 'src/routes/productsRoutes'
@@ -9,15 +9,16 @@ const ReactMarkdown = lazy(() => import('react-markdown'))
 const { Title, Paragraph } = Typography
 
 interface ProductCardProps {
+  extra?: React.ReactNode
   id: number
   title?: string
-  product?: string
   description?: string
   onClick?: () => void
   onDelete?: (id: number) => void
 }
 export const ProductCard: FCC<ProductCardProps> = ({
   id,
+  extra,
   title,
   description = '',
   onClick,
@@ -33,14 +34,19 @@ export const ProductCard: FCC<ProductCardProps> = ({
         }
         style={{ width: '100%', marginBottom: 16, height: '350px' }} // Задаем фиксированную высоту
         extra={
-          <Button
-            type={'text'}
-            icon={<DeleteOutlined />}
-            onClick={(e) => {
-              e.preventDefault()
-              onDelete?.(id)
-            }}
-          />
+          <Space direction={'horizontal'}>
+            {extra}
+            {onDelete ? (
+              <Button
+                type={'text'}
+                icon={<DeleteOutlined />}
+                onClick={(e) => {
+                  e.preventDefault()
+                  onDelete?.(id)
+                }}
+              />
+            ) : null}
+          </Space>
         }
         hoverable
         onClick={onClick}
