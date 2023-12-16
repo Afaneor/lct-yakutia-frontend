@@ -1,0 +1,8 @@
+{
+  "output": "json",
+  "fields": [
+    "name",
+    "author",
+    "licenseType"
+  ]
+}

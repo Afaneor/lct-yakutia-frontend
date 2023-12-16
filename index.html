@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="apple-touch-icon" href="/logo192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>GENA</title>
+    <base href="/" />
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!--
+      Following script will be templated using command
+       envsubst '{{$APP_SERVER_URL $APP_SMART_CAPTCHA_CLIENT_KEY}}' < ./index.html
+       Be careful. If index html used in dev mod -- variables will be empty.
+    -->
+    <script>
+      const KEYS = {
+        VITE_SERVER_URL: '$REACT_APP_SERVER_URL',
+        VITE_SMART_CAPTCHA_CLIENT_KEY: '$REACT_APP_SMART_CAPTCHA_CLIENT_KEY',
+        VITE_MAPBOX_PUBLIC_API_KEY: '$REACT_APP_MAPBOX_PUBLIC_API_KEY',
+        VITE_OPEN_REPLAY_API_KEY: '$REACT_APP_OPEN_REPLAY_API_KEY',
+        VITE_OPEN_REPLAY_INGEST_POINT: '$REACT_APP_OPEN_REPLAY_INGEST_POINT',
+      }
+      Object.keys(KEYS).forEach(function (key, index) {
+        if (KEYS[key].startsWith('$')) {
+          KEYS[key] = ''
+        }
+        window[key] = KEYS[key]
+      })
+    </script>
+    <script type="module" src="./src/index.tsx"></script>
+    <div id="root"></div>
+  </body>
+</html>

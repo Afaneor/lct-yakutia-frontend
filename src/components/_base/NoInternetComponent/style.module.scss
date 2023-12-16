@@ -1,0 +1,17 @@
+@mixin centered {
+  display: flex;
+  justify-content: center;
+}
+.containerText {
+  @include centered;
+  margin-top: 50px;
+}
+.containerIcon {
+  @include centered;
+}
+
+.container {
+  width: 100%;
+  top: 30%;
+  position: relative;
+}
