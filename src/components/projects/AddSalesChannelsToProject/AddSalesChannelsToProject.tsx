@@ -6,6 +6,7 @@ import { useTranslation } from 'src/hooks'
 import { PlusCircleOutlined } from '@ant-design/icons'
 
 interface AddChannelsModalProps {
+  channels: number[]
   isLoading?: boolean
   visible: boolean
   onCancel: () => void
@@ -19,6 +20,7 @@ export const AddSalesChannelsToProject: React.FC<AddChannelsModalProps> = ({
   onCancel,
   onAdd,
   onShowModal,
+  channels,
 }) => {
   const { tF } = useTranslation()
   const [form] = Form.useForm()
@@ -57,6 +59,7 @@ export const AddSalesChannelsToProject: React.FC<AddChannelsModalProps> = ({
         <Form
           form={form}
           name={formName}
+          initialValues={{ sales_channels: channels }}
           layout='vertical'
           onFinish={handleAdd}
         >

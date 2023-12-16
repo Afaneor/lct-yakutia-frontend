@@ -14,11 +14,9 @@ export const CardDetailSection: FCC<CardDetailSectionProps> = ({
 }) => {
   return (
     <Card className={styles.container} title={title} extra={extra}>
-      {children}
+      <div className={styles.content}>{children}</div>
     </Card>
   )
 }
 
 CardDetailSection.displayName = 'CardDetailSection'
-
-export default CardDetailSection

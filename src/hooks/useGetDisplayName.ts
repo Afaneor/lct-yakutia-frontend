@@ -21,7 +21,7 @@ export const useGetDisplayNameFromChoices = () => {
     if (choices && choices[type]) {
       return choices[type]?.choices?.find(
         (item: Choice) => item.value === value
-      )?.displayName
+      )?.display_name
     }
     return null
   }

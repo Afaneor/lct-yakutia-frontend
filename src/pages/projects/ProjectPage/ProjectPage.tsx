@@ -1,20 +1,25 @@
-import React, { lazy, Suspense, useMemo } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { FCC } from 'src/types'
 import { Col, Divider, notification, Row } from 'antd'
-import { GoToEntityDetail, SalesChannelListItem } from 'src/components'
+import {
+  GoToEntityDetail,
+  SalesChannelListItem,
+  CardDetailSection,
+} from 'src/components'
 import { useTranslation } from 'src/hooks'
 import { Outlet, useParams } from 'react-router-dom'
-import { ChannelActionsRoutesNames } from 'src/routes/projectsRoutes'
 import {
   useExtraActionsPost,
   useFetchOneItem,
   useUpdateItem,
 } from 'src/services/base/hooks'
-import { ProjectSalesChannelModel, ProjectsModel } from 'src/models'
+import {
+  ProjectSalesChannelModel,
+  ProjectsModel,
+  SalesChannelFields,
+} from 'src/models'
 import { ProductsRoutesNames } from 'src/routes/productsRoutes'
 import { AddSalesChannelsToProject } from 'src/components/projects/AddSalesChannelsToProject/AddSalesChannelsToProject'
-import styles from 'src/pages/products/ProductPage/ProductPage.module.scss'
-import CardDetailSection from '../../../components/_base/CardDetailSection/CardDetailSection'
 const EditableMarkdown = React.lazy(
   () => import('src/components/_base/EditableMarkdown/EditableMarkdown')
 )
@@ -43,26 +48,6 @@ export const ProjectPage: FCC = () => {
       enabled: !!id,
     },
   })
-
-  const channelsCardsFakeData = useMemo(() => {
-    return [
-      {
-        id: 1,
-        title: t('СМС'),
-        to: `${ChannelActionsRoutesNames.CHANNELS}/sms`,
-      },
-      {
-        id: 2,
-        title: t('ПУШ'),
-        to: `${ChannelActionsRoutesNames.CHANNELS}/push`,
-      },
-      {
-        id: 3,
-        title: t('КУРЬЕР'),
-        to: `${ChannelActionsRoutesNames.CHANNELS}/courier`,
-      },
-    ]
-  }, [t])
 
   const { mutate: updateProject } = useUpdateItem(ProjectsModel)
 
@@ -173,6 +158,9 @@ export const ProjectPage: FCC = () => {
               title={t('Каналы связи')}
               extra={
                 <AddSalesChannelsToProject
+                  channels={data?.data?.sales_channels.map(
+                    (channel: SalesChannelFields) => channel.id
+                  )}
                   isLoading={isAddSalesChannelsToProjectLoading}
                   visible={isShowAddSalesChannelsModal}
                   onAdd={handleAddSalesChannelsToProject}

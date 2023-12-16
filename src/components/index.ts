@@ -26,6 +26,7 @@ export * from './_base/GoToEntityDetail'
 export * from './_base/EntityItemsPageWrapper'
 export * from './_base/EntityCreateModal'
 export * from './_base/SalesChannelListItem'
+export * from './_base/CardDetailSection'
 
 // typography components
 export * from './_typography/Text'

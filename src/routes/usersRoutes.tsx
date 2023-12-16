@@ -1,4 +1,4 @@
-import { BarChartOutlined, UserOutlined } from '@ant-design/icons'
+import { UserOutlined } from '@ant-design/icons'
 import React, { lazy } from 'react'
 import { useTranslation } from 'src/hooks'
 import { Link } from 'src/routes/routesList'
@@ -16,7 +16,7 @@ export const UsersRoutes = () => {
       to: UsersRoutesNames.USERS,
       component: <Users />,
       icon: <UserOutlined />,
-      isNavLink: true,
+      isNavLink: false,
     },
   ] as Link[]
 }

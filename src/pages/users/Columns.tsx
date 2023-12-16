@@ -1,44 +1,43 @@
-import PersonalOfferText from '../../components/_base/PersonalOfferText/PersonalOfferText'
+import React from 'react'
+import { useTranslation } from 'src/hooks'
+import { useGetDisplayNameFromChoices } from 'src/hooks/useGetDisplayName'
+import { ProjectUsersModel } from 'src/models/ProjectsUsers'
 
 export const Columns = () => {
+  const { t } = useTranslation()
+  const getDisplayName = useGetDisplayNameFromChoices()
+
   return [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      sorter: true,
-      render: (name: { first: string; last: string }) =>
-        `${name.first} ${name.last}`,
+      title: t('ФИО'),
+      dataIndex: 'user',
+      render: (user: { first_name: string; last_name: string }) =>
+        `${user?.first_name} ${user?.last_name}`,
       width: '20%',
     },
     {
-      title: 'Gender',
-      dataIndex: 'gender',
+      title: t('Email'),
+      dataIndex: 'user.email',
+      width: '20%',
+    },
+    {
+      title: t('Роль'),
+      dataIndex: 'role',
+      key: 'role',
       filters: [
-        { text: 'Male', value: 'male' },
-        { text: 'Female', value: 'female' },
+        {
+          value: 'manager',
+          text: t('Руководитель'),
+        },
+        {
+          value: 'performer',
+          text: t('Исполнитель'),
+        },
       ],
       width: '10%',
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      width: '20%',
-    },
-    {
-      title: 'Предложение',
-      dataIndex: 'personalOffer',
-      width: '20%',
-      render: (val: string, record: any) => (
-        <PersonalOfferText
-          text={
-            'Ловите волшебный кешбэк до 30%\n' +
-            'Ловите волшебный кешбэк до 30%\n' +
-            'Ловите волшебный кешбэк до 30%\n' +
-            'Ловите волшебный кешбэк до 30%\n' +
-            'за покупки на маркетплейсах и в супермаркетах по дебетовой карте «Мир»'
-          }
-        />
-      ),
+      render: (role: string) => {
+        return getDisplayName(ProjectUsersModel.modelName, 'role', role)
+      },
     },
   ]
 }
