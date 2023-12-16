@@ -1,0 +1,7 @@
+version: "3.9"
+
+services:
+  frontend:
+    image: afaneor/lct-yakutia-frontend:tagname
+    ports:
+      - "80:80"
