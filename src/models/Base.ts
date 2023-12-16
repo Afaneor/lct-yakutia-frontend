@@ -9,6 +9,7 @@ export interface BaseModelProps {
 }
 
 export const G_GMP_APP_URL = 'g-gmp'
+export const USERS_REQUESTS_URL = 'user-request'
 
 export class BaseModel {
   static modelName = 'base'

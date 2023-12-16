@@ -34,14 +34,6 @@ export const ProjectCreateForm: FCC = () => {
           <MDEditor data-color-mode={'light'} />
         </Form.Item>
       </Suspense>
-      <Suspense fallback={<Spin spinning />}>
-        <Form.Item
-          name={'prompt'}
-          label={t('Дополнительные данные для формирования запроса в LLM')}
-        >
-          <MDEditor data-color-mode={'light'} />
-        </Form.Item>
-      </Suspense>
     </>
   )
 }

@@ -4,16 +4,17 @@ import {
   BarChartOutlined,
   MailOutlined,
   InfoCircleOutlined,
-  AimOutlined,
+  UsergroupAddOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons'
 import { useTranslation } from 'src/hooks'
 import { NavLink } from 'react-router-dom'
-import { SalesChannelFields } from 'src/models'
+import { ProjectSalesChannelFields } from 'src/models'
 import SalesChannelInfo from '../../sales-channels/SalesChannelInfo/SalesChannelInfo'
 import isEmpty from 'lodash/isEmpty'
 
 interface ChannelListProps {
-  data?: SalesChannelFields[] // Замените any на тип вашего объекта данных
+  data?: ProjectSalesChannelFields[] // Замените any на тип вашего объекта данных
   onInfo?: (id: string) => void
   onStatistic?: (id: string) => void
   onMailing?: (id: string) => void
@@ -21,17 +22,35 @@ interface ChannelListProps {
 }
 
 export const SalesChannelListItem: React.FC<ChannelListProps> = ({ data }) => {
-  const [currentChannel, setCurrentChannel] =
-    React.useState<SalesChannelFields>({} as SalesChannelFields)
+  const [currentChannel, setCurrentChannel] = React.useState<{
+    title: string
+    text: string
+  }>({} as { title: string; text: string })
   const { tF } = useTranslation()
   const renderItem = (item: any) => (
     <List.Item
       actions={[
-        <Tooltip key={'info'} title={tF('Информация')}>
+        <Tooltip key={'info'} title={tF('Описание')}>
           <Button
             icon={<InfoCircleOutlined />}
             onClick={() => {
-              setCurrentChannel(item)
+              setCurrentChannel({
+                title: item?.sale_channel?.name,
+                text: item?.sale_channel?.description,
+              })
+            }}
+          />
+        </Tooltip>,
+        <Tooltip key={'prompt'} title={tF('Дополнительные данные ')}>
+          <Button
+            icon={<FileTextOutlined />}
+            onClick={() => {
+              setCurrentChannel({
+                title: tF(
+                  'Дополнительные данные для формирования запроса в LLM'
+                ),
+                text: item?.prompt,
+              })
             }}
           />
         </Tooltip>,
@@ -41,32 +60,29 @@ export const SalesChannelListItem: React.FC<ChannelListProps> = ({ data }) => {
         <Tooltip key={'mailing'} title={tF('Рассылка')}>
           <Button icon={<MailOutlined />} />
         </Tooltip>,
-        <Tooltip
-          key={'users'}
-          title={tF('Сформировать маркетинговое предложение')}
-        >
-          <NavLink to={`channel/${item.id}/projects-users`}>
-            <Button icon={<AimOutlined />}>{tF('Сформировать')}</Button>
+        <Tooltip key={'clients'} title={tF('Сформировать запрос')}>
+          <NavLink to={`channels/${item.id}`}>
+            <Button icon={<UsergroupAddOutlined />} />
           </NavLink>
         </Tooltip>,
       ]}
     >
-      <List.Item.Meta title={item.name} />
+      <List.Item.Meta title={item?.sale_channel?.name} />
     </List.Item>
   )
 
   const handleOk = () => {
-    setCurrentChannel({} as SalesChannelFields)
+    setCurrentChannel({} as { title: string; text: string })
   }
   return (
     <>
       <SalesChannelInfo
-        title={currentChannel.name}
+        title={currentChannel?.title}
         isOpen={!isEmpty(currentChannel)}
         onOk={handleOk}
         onCancel={handleOk}
       >
-        {currentChannel.description}
+        {currentChannel?.text}
       </SalesChannelInfo>
       <List dataSource={data} renderItem={renderItem} />
     </>

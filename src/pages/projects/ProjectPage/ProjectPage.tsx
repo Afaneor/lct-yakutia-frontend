@@ -1,13 +1,13 @@
 import React, { lazy, Suspense } from 'react'
 import { FCC } from 'src/types'
-import { Col, Divider, notification, Row } from 'antd'
+import { Button, Col, Divider, notification, Row, Space, Tooltip } from 'antd'
 import {
   GoToEntityDetail,
   SalesChannelListItem,
   CardDetailSection,
 } from 'src/components'
 import { useTranslation } from 'src/hooks'
-import { Outlet, useParams } from 'react-router-dom'
+import { NavLink, Outlet, useParams } from 'react-router-dom'
 import {
   useExtraActionsPost,
   useFetchOneItem,
@@ -20,6 +20,10 @@ import {
 } from 'src/models'
 import { ProductsRoutesNames } from 'src/routes/productsRoutes'
 import { AddSalesChannelsToProject } from 'src/components/projects/AddSalesChannelsToProject/AddSalesChannelsToProject'
+import { ProjectsUsersRoutesNames } from 'src/routes/projectsUserRoutes'
+import { AimOutlined } from '@ant-design/icons'
+import { useEntityPage } from 'src/pages/hooks/useEntityPage'
+import { ProjectsRoutesNames } from 'src/routes/projectsRoutes'
 const EditableMarkdown = React.lazy(
   () => import('src/components/_base/EditableMarkdown/EditableMarkdown')
 )
@@ -28,47 +32,22 @@ const PageWrapper = lazy(
   () => import('src/components/_base/PageWrapper/PageWrapper')
 )
 
+const model = ProjectsModel
 export const ProjectPage: FCC = () => {
   const { t } = useTranslation()
-  const { id } = useParams<{ id: string }>()
   const [isShowAddSalesChannelsModal, setIsShowAddSalesChannelsModal] =
     React.useState(false)
 
   const {
     data,
     refetch,
+    handleUpdate,
   }: {
     data: any
     isLoading: boolean
     refetch: CallableFunction
-  } = useFetchOneItem({
-    model: ProjectsModel,
-    id: Number(id),
-    options: {
-      enabled: !!id,
-    },
-  })
-
-  const { mutate: updateProject } = useUpdateItem(ProjectsModel)
-
-  const handleUpdate = (field: string, text: string) => {
-    updateProject(
-      { id: data?.data?.id, fields: { [field]: text } },
-      {
-        onSuccess: () => {
-          refetch()
-          notification.success({
-            message: t('Успешно обновлено'),
-          })
-        },
-        onError: () => {
-          notification.error({
-            message: t('Не удалось обновить'),
-          })
-        },
-      }
-    )
-  }
+    handleUpdate: CallableFunction
+  } = useEntityPage(model)
 
   const {
     mutate: addSalesChannelsToProject,
@@ -110,7 +89,7 @@ export const ProjectPage: FCC = () => {
       breadcrumbs={[
         {
           title: t('Проекты'),
-          href: '/projects',
+          href: `/${ProjectsRoutesNames.PROJECTS}`,
         },
         {
           title: data?.data?.name,
@@ -120,7 +99,16 @@ export const ProjectPage: FCC = () => {
       <>
         <Row gutter={[16, 16]}>
           <Col xs={24} xl={12}>
-            <CardDetailSection title={'Описание'}>
+            <CardDetailSection
+              title={'Описание'}
+              extra={
+                <Tooltip key={'users'} title={t('Пользователи проекта')}>
+                  <NavLink to={ProjectsUsersRoutesNames.PROJECTS_USERS}>
+                    <Button icon={<AimOutlined />}>{t('Пользователи')}</Button>
+                  </NavLink>
+                </Tooltip>
+              }
+            >
               {data?.data ? (
                 <EditableMarkdown
                   text={data?.data?.description}
@@ -141,35 +129,27 @@ export const ProjectPage: FCC = () => {
               {data?.data?.product?.description}
             </CardDetailSection>
           </Col>
-          <Col xs={24} xl={12}>
-            <CardDetailSection
-              title={t('Дополнительные данные для формирования запроса в LLM')}
-            >
-              {data?.data ? (
-                <EditableMarkdown
-                  text={data?.data?.prompt}
-                  onSave={(text) => handleUpdate('prompt', text)}
-                />
-              ) : null}
-            </CardDetailSection>
-          </Col>
-          <Col xs={24} xl={12}>
+          <Col xs={24}>
             <CardDetailSection
               title={t('Каналы связи')}
               extra={
-                <AddSalesChannelsToProject
-                  channels={data?.data?.sales_channels.map(
-                    (channel: SalesChannelFields) => channel.id
-                  )}
-                  isLoading={isAddSalesChannelsToProjectLoading}
-                  visible={isShowAddSalesChannelsModal}
-                  onAdd={handleAddSalesChannelsToProject}
-                  onCancel={() => handleShowAddSalesChannelsModal(false)}
-                  onShowModal={() => handleShowAddSalesChannelsModal(true)}
-                />
+                <Space direction={'horizontal'}>
+                  <AddSalesChannelsToProject
+                    channels={data?.data?.projects_sales_channels.map(
+                      (channel: SalesChannelFields) => channel.id
+                    )}
+                    isLoading={isAddSalesChannelsToProjectLoading}
+                    visible={isShowAddSalesChannelsModal}
+                    onAdd={handleAddSalesChannelsToProject}
+                    onCancel={() => handleShowAddSalesChannelsModal(false)}
+                    onShowModal={() => handleShowAddSalesChannelsModal(true)}
+                  />
+                </Space>
               }
             >
-              <SalesChannelListItem data={data?.data?.sales_channels} />
+              <SalesChannelListItem
+                data={data?.data?.projects_sales_channels}
+              />
             </CardDetailSection>
           </Col>
           <Divider />

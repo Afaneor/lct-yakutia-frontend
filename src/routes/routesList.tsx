@@ -24,5 +24,6 @@ export const RoutesList: () => any[] = () => {
     ...StatisticsRoutes(),
     ...GenaRoutes(),
     ...UsersRoutes(),
+    ...GenaRoutes(),
   ]
 }

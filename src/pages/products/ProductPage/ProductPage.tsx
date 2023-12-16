@@ -2,35 +2,58 @@ import React from 'react'
 import styles from './ProductPage.module.scss'
 import { FCC } from 'src/types'
 import { useTranslation } from 'src/hooks'
-import { PageWrapper } from 'src/components'
-import { Card } from 'antd'
+import { CardDetailSection, PageWrapper } from 'src/components'
+import { Col, Row } from 'antd'
+import { ProductsModel } from 'src/models'
+import { useEntityPage } from 'src/pages/hooks/useEntityPage'
+import EditableMarkdown from 'src/components/_base/EditableMarkdown/EditableMarkdown'
+import { ProjectsRoutesNames } from 'src/routes/projectsRoutes'
 
 interface ProductPageProps {
   prop?: any
 }
+
+const model = ProductsModel
 export const ProductPage: FCC<ProductPageProps> = ({ prop }) => {
-  const { t } = useTranslation()
+  const { t, tF } = useTranslation()
+  const {
+    data,
+    refetch,
+    handleUpdate,
+  }: {
+    data: any
+    isLoading: boolean
+    refetch: CallableFunction
+    handleUpdate: CallableFunction
+  } = useEntityPage(model)
 
   return (
     <PageWrapper
-      title={'data?.data?.name'}
+      title={data?.data?.name}
       breadcrumbs={[
         {
           title: t('Проекты'),
-          href: '/projects',
+          href: `/${ProjectsRoutesNames.PROJECTS}`,
         },
         {
-          title: 'data?.data?.name',
+          title: data?.data?.name,
         },
       ]}
     >
-      <Card
-        title={'Описание'}
-        className={styles.card}
-        extra={<a href='#'>More</a>}
-      >
-        <p>data?.data?.description</p>
-      </Card>
+      <>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} xl={12}>
+            <CardDetailSection title={'Описание'}>
+              {data?.data ? (
+                <EditableMarkdown
+                  text={data?.data?.description}
+                  onSave={(text) => handleUpdate('description', text)}
+                />
+              ) : null}
+            </CardDetailSection>
+          </Col>
+        </Row>
+      </>
     </PageWrapper>
   )
 }

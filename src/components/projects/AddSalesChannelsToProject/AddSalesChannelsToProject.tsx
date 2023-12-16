@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button, Form } from 'antd'
+import { Modal, Button, Form, Tooltip } from 'antd'
 import { SalesChannelModel } from 'src/models'
 import { SelectSearchable } from 'src/components'
 import { useTranslation } from 'src/hooks'
@@ -36,7 +36,13 @@ export const AddSalesChannelsToProject: React.FC<AddChannelsModalProps> = ({
 
   return (
     <>
-      <Button type='text' icon={<PlusCircleOutlined />} onClick={onShowModal} />
+      <Tooltip title={tF('Добавить каналы связи')}>
+        <Button
+          type='text'
+          icon={<PlusCircleOutlined />}
+          onClick={onShowModal}
+        />
+      </Tooltip>
       <Modal
         title={tF('Добавить каналы связи в проект')}
         open={visible}

@@ -3,23 +3,22 @@ import { RadarChartOutlined } from '@ant-design/icons'
 import { lazy } from 'react'
 import { useTranslation } from 'src/hooks'
 import { Link } from 'src/routes/routesList'
+import { ProjectsUsersRoutesNames } from 'src/routes/projectsUserRoutes'
 
 const Projects = lazy(
   () => import('src/pages/projects/ProjectsPage/ProjectsPage')
 )
 const Project = lazy(() => import('src/pages/projects/ProjectPage/ProjectPage'))
-const ChannelActions = lazy(
-  () => import('src/components/_base/ChannelActions/ChannelActions')
+const Users = lazy(() => import('src/pages/projectsUsers/UsersPage/UsersPage'))
+const UsersRequests = lazy(
+  () => import('src/pages/usersRequests/UsersPage/UsersPage')
 )
-const Statistics = lazy(
-  () => import('src/pages/statistics/StatisticsPage/StatisticsPage')
-)
-const Users = lazy(() => import('src/pages/users/UsersPage/UsersPage'))
 const Gena = lazy(() => import('src/pages/gena/GenaPage/GenaPage'))
-const Mailing = lazy(() => import('src/pages/mailing/MailingPage/MailingPage'))
+
 export const ProjectsRoutesNames = {
   PROJECTS: 'projects',
   PROJECT: 'project',
+  PROJECTS_USERS: 'projects-users',
 }
 
 export const ChannelActionsRoutesNames = {
@@ -60,8 +59,13 @@ export const ProjectsRoutes = () => {
       childrenList: [],
     },
     {
-      to: `/${ProjectsRoutesNames.PROJECTS}/:id/channel/:salesChannelId/projects-users`,
+      to: `/${ProjectsRoutesNames.PROJECTS}/:id/${ProjectsUsersRoutesNames.PROJECTS_USERS}`,
       component: <Users />,
+      isNavLink: false,
+    },
+    {
+      to: `/${ProjectsRoutesNames.PROJECTS}/:id/channels/:projectSalesChannelId`,
+      component: <UsersRequests />,
       isNavLink: false,
     },
     // // роуты для каналов связи

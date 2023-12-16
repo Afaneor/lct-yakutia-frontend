@@ -1,10 +1,10 @@
 import React from 'react'
 import { screen } from '@testing-library/react'
 import { render } from 'src/test-utils'
-import { ProjectCreateModal } from '../index'
+import { UsersPage } from '../index'
 
 test('renders component successfully', () => {
-  render(<ProjectCreateModal />)
-  const element = screen.getByTestId('test-ProjectCreateModal')
+  render(<UsersPage />)
+  const element = screen.getByTestId('test-UsersPage')
   expect(element).toBeInTheDocument()
 })

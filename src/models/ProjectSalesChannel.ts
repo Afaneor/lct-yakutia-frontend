@@ -1,9 +1,9 @@
 import { BaseModel, BaseModelProps, G_GMP_APP_URL } from 'src/models/Base'
+import { SalesChannelFields } from 'src/models/SalesChannel'
 
 export interface ProjectSalesChannelFields extends BaseModelProps {
-  name: string
-  key_name: string
-  description: string
+  sale_channel: SalesChannelFields
+  prompt: string
 }
 
 export class ProjectSalesChannelModel extends BaseModel {
