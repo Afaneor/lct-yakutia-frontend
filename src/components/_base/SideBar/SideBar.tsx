@@ -50,14 +50,16 @@ export const SideBar: FCC<SideBarProps> = ({ sideBarItems }) => {
               margin: '20px 0',
             }}
           >
-            <Title
-              level={3}
-              style={{
-                color: '#fff',
-              }}
-            >
-              {APP_NAME_SHORT}
-            </Title>
+            <NavLink to='/'>
+              <Title
+                level={3}
+                style={{
+                  color: '#fff',
+                }}
+              >
+                {APP_NAME_SHORT}
+              </Title>
+            </NavLink>
           </h1>
           <Menu
             theme='dark'
