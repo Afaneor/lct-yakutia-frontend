@@ -1,37 +1,25 @@
 import React from 'react'
-import styles from './StatisticsPage.module.scss'
 import { FCC } from 'src/types'
-import { CardDetailSection, PageWrapper, PaginatedTable } from 'src/components'
+import { PageWrapper, PaginatedTable, PromptModalBtn } from 'src/components'
 import { useTranslation } from 'src/hooks'
 import { UsersPageActions } from 'src/components/users/UsersPageActions'
 import { Columns } from 'src/pages/usersRequests/Columns'
 import LoadDataModal from '../../../components/_base/LoadDataModal/LoadDataModal'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ProjectUsersModel } from 'src/models/ProjectsUsers'
 import { usePaginatedFetchData } from 'src/services/base/usePaginatedFetchData'
-import {
-  ProductsModel,
-  ProjectSalesChannelModel,
-  UsersRequestsModel,
-} from 'src/models'
-import { Button, Col, Space } from 'antd'
-import { FileTextOutlined } from '@ant-design/icons'
-import PromptModalBtn from '../../../components/_base/PromptModalBtn/PromptModalBtn'
+import { ProjectSalesChannelModel, UsersRequestsModel } from 'src/models'
+import { Space } from 'antd'
 import { useEntityPage } from 'src/pages/hooks/useEntityPage'
-
-interface UsersPageProps {
-  prop?: any
-}
 
 const usersRequestsModel = UsersRequestsModel
 const model = ProjectSalesChannelModel
-// const model = ProductsModel
 
-export const UsersPage: FCC<UsersPageProps> = ({ prop }) => {
+export const RequestsPage: FCC = () => {
+  const [title] = React.useState('Запросы формирования предложения')
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = React.useState(false)
   const { t } = useTranslation()
-  const columns = Columns()
+  const columns = Columns(usersRequestsModel)
   const { projectSalesChannelId } = useParams<{
     id: string
     projectSalesChannelId: string
@@ -76,7 +64,7 @@ export const UsersPage: FCC<UsersPageProps> = ({ prop }) => {
   })
   return (
     <PageWrapper
-      title={t('Пользовательские запросы')}
+      title={title}
       itemsCount={dataCount}
       noEmptyData
       breadcrumbs={[
@@ -88,7 +76,7 @@ export const UsersPage: FCC<UsersPageProps> = ({ prop }) => {
           title: data?.data?.project?.name,
           href: `/projects/${id}`,
         },
-        { title: t('Пользовательские запросы') },
+        { title },
       ]}
       actions={
         <Space direction={'horizontal'}>
@@ -111,13 +99,13 @@ export const UsersPage: FCC<UsersPageProps> = ({ prop }) => {
         isLoading={isLoadingTableData || isFetching}
         onTableChange={handlePaginationChange}
         onRowClick={({ record }) => {
-          navigate(`${record.id.value}`)
+          navigate(`${record.id}`)
         }}
       />
     </PageWrapper>
   )
 }
 
-UsersPage.displayName = 'UsersPage'
+RequestsPage.displayName = 'RequestsPage'
 
-export default UsersPage
+export default RequestsPage

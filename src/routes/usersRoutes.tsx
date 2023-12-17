@@ -3,7 +3,9 @@ import React, { lazy } from 'react'
 import { useTranslation } from 'src/hooks'
 import { Link } from 'src/routes/routesList'
 
-const Users = lazy(() => import('src/pages/usersRequests/UsersPage/UsersPage'))
+const Users = lazy(
+  () => import('src/pages/usersRequests/RequestsPage/RequestsPage')
+)
 
 const UsersRoutesNames = {
   USERS: 'users',

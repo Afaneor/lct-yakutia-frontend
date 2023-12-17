@@ -60,8 +60,11 @@ export const SalesChannelListItem: React.FC<ChannelListProps> = ({ data }) => {
         <Tooltip key={'mailing'} title={tF('Рассылка')}>
           <Button icon={<MailOutlined />} />
         </Tooltip>,
-        <Tooltip key={'clients'} title={tF('Сформировать запрос')}>
-          <NavLink to={`channels/${item.id}`}>
+        <Tooltip
+          key={'clients'}
+          title={tF('Запросы для формирования маркетингово предложения')}
+        >
+          <NavLink to={`channels/${item.id}/requests`}>
             <Button icon={<UsergroupAddOutlined />} />
           </NavLink>
         </Tooltip>,

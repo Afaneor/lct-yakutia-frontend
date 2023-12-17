@@ -11,11 +11,11 @@ export const UsersPageActions: FCC<UsersPageActionsProps> = ({ onUpload }) => {
   const { t } = useTranslation()
   return (
     <Space>
-      <Button type='primary' icon={<ExperimentOutlined />}>
-        {t('Сформировать')}
-      </Button>
       <Button icon={<UploadOutlined />} onClick={onUpload}>
         {t('Загрузка данных')}
+      </Button>
+      <Button type='primary' icon={<ExperimentOutlined />}>
+        {t('Сформировать')}
       </Button>
     </Space>
   )

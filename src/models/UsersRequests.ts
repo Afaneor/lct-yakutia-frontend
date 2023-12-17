@@ -6,7 +6,7 @@ import {
   UsersModelProps,
 } from 'src/models'
 
-export interface UsersRequestsModelProps extends BaseModelProps {
+export interface UsersRequestsFields extends BaseModelProps {
   project_sale_channel: ProjectSalesChannelFields
   user: UsersModelProps
   client_id: string

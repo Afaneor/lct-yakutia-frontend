@@ -11,7 +11,7 @@ const Projects = lazy(
 const Project = lazy(() => import('src/pages/projects/ProjectPage/ProjectPage'))
 const Users = lazy(() => import('src/pages/projectsUsers/UsersPage/UsersPage'))
 const UsersRequests = lazy(
-  () => import('src/pages/usersRequests/UsersPage/UsersPage')
+  () => import('src/pages/usersRequests/RequestsPage/RequestsPage')
 )
 const Gena = lazy(() => import('src/pages/gena/GenaPage/GenaPage'))
 
@@ -50,33 +50,19 @@ export const ProjectsRoutes = () => {
       isNavLink: false,
     },
     {
-      to: `/${ProjectsRoutesNames.PROJECTS}/:id/channels/:projectSalesChannelId`,
+      to: `/${ProjectsRoutesNames.PROJECTS}/:id/channels/:projectSalesChannelId/requests`,
       component: <UsersRequests />,
       isNavLink: false,
     },
-    // // роуты для каналов связи
-    // {
-    //   title: t('Статистика канала связи проекта'),
-    //   to: `${ProjectChannelTypesUrl}/statistics`,
-    //   component: <Statistics />,
-    //   isNavLink: false,
-    // },
-    // {
-    //   title: t('Пользователи канала связи проекта'),
-    //   to: `${ProjectChannelTypesUrl}/users`,
-    //   component: <Users />,
-    //   isNavLink: false,
-    // },
-    // {
-    //   title: t('Рассылка канала связи проекта'),
-    //   to: `${ProjectChannelTypesUrl}/mailing`,
-    //   component: <Mailing />,
-    //   isNavLink: false,
-    // },
     {
-      title: t('Страница генерации персонального предложения для пользователя'),
-      to: `${ProjectChannelTypesUrl}/users/:userId`,
+      to: `/${ProjectsRoutesNames.PROJECTS}/:id/channels/:projectSalesChannelId/requests/:requestId`,
       component: <Gena />,
+      isNavLink: false,
     },
+    // {
+    //   title: t('Страница генерации персонального предложения для пользователя'),
+    //   to: `${ProjectChannelTypesUrl}/users/:userId`,
+    //   component: <Gena />,
+    // },
   ] as Link[]
 }
