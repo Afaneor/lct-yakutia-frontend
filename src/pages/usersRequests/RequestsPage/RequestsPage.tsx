@@ -140,7 +140,7 @@ export const RequestsPage: FCC = () => {
     refetch()
   }
 
-  const columns = Columns(usersRequestsModel, handleUserRequestUpdate)
+  const columns = Columns(handleUserRequestUpdate)
 
   return (
     <PageWrapper

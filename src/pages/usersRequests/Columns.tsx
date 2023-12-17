@@ -4,14 +4,14 @@ import {
   useGetChoicesListFromChoicesAsOptions,
   useGetDisplayNameFromChoices,
 } from 'src/hooks/useGetDisplayName'
-import { BaseModel, UsersRequestsFields } from 'src/models'
+import { UsersRequestsFields, UsersRequestsModel } from 'src/models'
 import { ManOutlined, WomanOutlined } from '@ant-design/icons'
 import { Select, Space, Tooltip, Typography } from 'antd'
 import { MessageFields } from 'src/models/Messages'
 const { Text } = Typography
+const usersRequestsModel = UsersRequestsModel
 
 export const Columns = (
-  model: typeof BaseModel,
   handleUpdateCol: (
     recordId: number | string,
     dataIndex: string,
@@ -44,7 +44,7 @@ export const Columns = (
         return (
           <Tooltip title={client.gender === '1' ? t('Женский') : t('Мужской')}>
             <Space>
-              {client.gender === '1' ? (
+              {client?.gender === '1' ? (
                 <WomanOutlined style={{ color: '#ff85c0' }} />
               ) : (
                 <ManOutlined />
@@ -73,7 +73,7 @@ export const Columns = (
           <Select
             value={success_type}
             style={{ width: '100%' }}
-            options={getOptions(model.modelName, 'success_type')}
+            options={getOptions(usersRequestsModel.modelName, 'success_type')}
             onClick={(e) => {
               e.stopPropagation()
               e.preventDefault()
@@ -91,7 +91,7 @@ export const Columns = (
       key: 'status',
       width: '10%',
       render: (status: string) => {
-        return getDisplayName(model.modelName, 'status', status)
+        return getDisplayName(usersRequestsModel.modelName, 'status', status)
       },
     },
     {
@@ -99,15 +99,15 @@ export const Columns = (
       dataIndex: 'actual_message',
       render: (message: MessageFields, record: UsersRequestsFields) => {
         if (!message) {
-          if (record.status === 'initial') {
+          if (record?.status === 'initial') {
             return t('Hе формировалось')
-          } else if (record.status === 'in_progress') {
+          } else if (record?.status === 'in_progress') {
             return t('Формируется')
           }
         }
         return (
-          <Tooltip title={message.text} placement={'top'}>
-            <Text>{message.text}</Text>
+          <Tooltip title={message?.text} placement={'top'}>
+            <Text>{message?.text}</Text>
           </Tooltip>
         )
       },

@@ -1,8 +1,6 @@
 import React from 'react'
 import { List, Button, Tooltip } from 'antd'
 import {
-  BarChartOutlined,
-  MailOutlined,
   InfoCircleOutlined,
   UsergroupAddOutlined,
   FileTextOutlined,
@@ -54,12 +52,12 @@ export const SalesChannelListItem: React.FC<ChannelListProps> = ({ data }) => {
             }}
           />
         </Tooltip>,
-        <Tooltip key={'statistic'} title={tF('Статистика')}>
-          <Button icon={<BarChartOutlined />} />
-        </Tooltip>,
-        <Tooltip key={'mailing'} title={tF('Рассылка')}>
-          <Button icon={<MailOutlined />} />
-        </Tooltip>,
+        // <Tooltip key={'statistic'} title={tF('Статистика')}>
+        //   <Button icon={<BarChartOutlined />} />
+        // </Tooltip>,
+        // <Tooltip key={'mailing'} title={tF('Рассылка')}>
+        //   <Button icon={<MailOutlined />} />
+        // </Tooltip>,
         <Tooltip
           key={'clients'}
           title={tF('Запросы для формирования маркетингово предложения')}

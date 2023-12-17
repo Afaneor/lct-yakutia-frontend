@@ -1,30 +1,22 @@
 import React, { lazy, Suspense } from 'react'
 import { FCC } from 'src/types'
-import { Button, Col, Divider, notification, Row, Space, Tooltip } from 'antd'
+import { Col, notification, Row, Space } from 'antd'
 import {
   GoToEntityDetail,
   SalesChannelListItem,
   CardDetailSection,
 } from 'src/components'
 import { useTranslation } from 'src/hooks'
-import { NavLink, Outlet, useParams } from 'react-router-dom'
-import {
-  useExtraActionsPost,
-  useFetchOneItem,
-  useUpdateItem,
-} from 'src/services/base/hooks'
+import { Outlet } from 'react-router-dom'
+import { useExtraActionsPost } from 'src/services/base/hooks'
 import {
   ProjectSalesChannelModel,
   ProjectsModel,
   SalesChannelFields,
 } from 'src/models'
-import { ProductsRoutesNames } from 'src/routes/productsRoutes'
 import { AddSalesChannelsToProject } from 'src/components/projects/AddSalesChannelsToProject/AddSalesChannelsToProject'
-import { ProjectsUsersRoutesNames } from 'src/routes/projectsUserRoutes'
-import { AimOutlined } from '@ant-design/icons'
 import { useEntityPage } from 'src/pages/hooks/useEntityPage'
 import { ProjectsRoutesNames } from 'src/routes/projectsRoutes'
-import SettingsButton from 'src/components/projects/ProjectSettingsDropdown/ProjectSettingsDropdown'
 const EditableMarkdown = React.lazy(
   () => import('src/components/_base/EditableMarkdown/EditableMarkdown')
 )
@@ -96,7 +88,8 @@ export const ProjectPage: FCC = () => {
           title: data?.data?.name,
         },
       ]}
-      actions={<SettingsButton />}
+      // TODO: скрыл неиспользуемую кнопку
+      // actions={<SettingsButton />}
     >
       <>
         <Row gutter={[16, 16]}>
@@ -147,12 +140,6 @@ export const ProjectPage: FCC = () => {
               />
             </CardDetailSection>
           </Col>
-          <Divider />
-          {/*<Col xs={24}>*/}
-          {/*  <CardDetailSection title={t('Статистика')}>*/}
-          {/*    Тут будет статистика*/}
-          {/*  </CardDetailSection>*/}
-          {/*</Col>*/}
         </Row>
         <Row gutter={[16, 16]}></Row>
         <Suspense>
