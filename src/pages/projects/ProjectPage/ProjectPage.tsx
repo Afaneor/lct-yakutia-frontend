@@ -101,16 +101,7 @@ export const ProjectPage: FCC = () => {
       <>
         <Row gutter={[16, 16]}>
           <Col xs={24} xl={12}>
-            <CardDetailSection
-              title={'Описание'}
-              extra={
-                <Tooltip key={'users'} title={t('Пользователи проекта')}>
-                  <NavLink to={ProjectsUsersRoutesNames.PROJECTS_USERS}>
-                    <Button icon={<AimOutlined />}>{t('Пользователи')}</Button>
-                  </NavLink>
-                </Tooltip>
-              }
-            >
+            <CardDetailSection title={'Описание'}>
               {data?.data ? (
                 <EditableMarkdown
                   text={data?.data?.description}
@@ -157,11 +148,11 @@ export const ProjectPage: FCC = () => {
             </CardDetailSection>
           </Col>
           <Divider />
-          <Col xs={24}>
-            <CardDetailSection title={t('Статистика')}>
-              Тут будет статистика
-            </CardDetailSection>
-          </Col>
+          {/*<Col xs={24}>*/}
+          {/*  <CardDetailSection title={t('Статистика')}>*/}
+          {/*    Тут будет статистика*/}
+          {/*  </CardDetailSection>*/}
+          {/*</Col>*/}
         </Row>
         <Row gutter={[16, 16]}></Row>
         <Suspense>
