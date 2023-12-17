@@ -6,7 +6,7 @@ import {
   PromptModalBtn,
   LoadDataModal,
 } from 'src/components'
-import { useTranslation } from 'src/hooks'
+import { selectionDefault, useSelectionBulk, useTranslation } from 'src/hooks'
 import { UsersPageActions } from 'src/components/users/UsersPageActions'
 import { Columns } from 'src/pages/usersRequests/Columns'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -16,6 +16,7 @@ import { message, Space } from 'antd'
 import { useEntityPage } from 'src/pages/hooks/useEntityPage'
 import { useExtraActionsPost, useUpdateItem } from 'src/services/base/hooks'
 import { MessagesModel } from 'src/models/Messages'
+import { RowSelectMethod } from 'antd/es/table/interface'
 
 const usersRequestsModel = UsersRequestsModel
 const model = ProjectSalesChannelModel
@@ -25,8 +26,7 @@ export const RequestsPage: FCC = () => {
   const navigate = useNavigate()
   const [title] = React.useState('Запросы для формирования предложения')
   const [isOpen, setIsOpen] = React.useState(false)
-  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
-
+  const { selections, handleSetSelections } = useSelectionBulk()
   const { projectSalesChannelId } = useParams<{
     id: string
     projectSalesChannelId: string
@@ -62,9 +62,15 @@ export const RequestsPage: FCC = () => {
     )
   }
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys((prevState) => {
-      return [...prevState, ...newSelectedRowKeys]
+  const onSelectChange = (
+    selectedRowKeys: React.Key[],
+    selectedRows: any[],
+    rowSelectedType: Record<'type', RowSelectMethod>
+  ) => {
+    handleSetSelections({
+      selectedRows,
+      selectedRowKeys,
+      rowSelectedType,
     })
   }
 
@@ -108,7 +114,7 @@ export const RequestsPage: FCC = () => {
       {
         url: MessagesModel.multipleCreationUrl(),
         record: {
-          ids: selectedRowKeys,
+          ids: selections.selectedRowKeys,
           project_sale_channel: projectSalesChannelId,
         },
       },
@@ -117,7 +123,7 @@ export const RequestsPage: FCC = () => {
           message.success(
             'Запрос на формирование предложений успешно отправлен'
           )
-          setSelectedRowKeys([])
+          handleSetSelections(selectionDefault)
           refetch()
         },
         onError: (err) => {
@@ -160,7 +166,7 @@ export const RequestsPage: FCC = () => {
             onUpdate={(text) => handleUpdate('prompt', text)}
           />
           <UsersPageActions
-            isDisabled={selectedRowKeys.length === 0}
+            isDisabled={selections?.selectedRowKeys?.length === 0}
             onUpload={handleIsOpen}
             onCreate={handleCreateOffers}
           />
@@ -181,7 +187,7 @@ export const RequestsPage: FCC = () => {
           navigate(`${record.id}`)
         }}
         rowSelection={{
-          selectedRowKeys,
+          selectedRowKeys: selections.selectedRowKeys,
           onChange: onSelectChange,
         }}
       />

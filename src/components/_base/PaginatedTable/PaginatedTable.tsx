@@ -2,7 +2,11 @@ import React from 'react'
 import { Button, Col, Row, Table } from 'antd'
 import styles from './PaginatedTable.module.scss'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
-import type { FilterValue, SorterResult } from 'antd/es/table/interface'
+import type {
+  FilterValue,
+  RowSelectMethod,
+  SorterResult,
+} from 'antd/es/table/interface'
 import { useWindowSize } from 'src/hooks'
 import { DeleteOutlined } from '@ant-design/icons'
 import { BaseModel } from 'src/models'
@@ -23,7 +27,11 @@ interface PaginatedTableProps {
   onDelete?: (record: BaseModel) => void
   rowSelection: {
     selectedRowKeys: React.Key[]
-    onChange: (selectedRowKeys: React.Key[]) => void
+    onChange: (
+      selectedRowKeys: React.Key[],
+      selectedRows: any[],
+      rowSelectedType: Record<'type', RowSelectMethod>
+    ) => void
   }
   onTableChange: (
     pagination: TablePaginationConfig,
