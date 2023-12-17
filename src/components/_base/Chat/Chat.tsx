@@ -99,21 +99,22 @@ export const Chat: FCC<ChatProps> = ({
           </Row>
         ))}
       </div>
-      <div style={{ display: 'flex', alignItems: 'flex-end', padding: '16px' }}>
-        <Input.TextArea
-          style={{ flex: 1, marginRight: '8px' }}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onPressEnter={handleEnterPress}
-          placeholder='Введите ваш вопрос и нажмите Enter'
-        />
-        <Button
-          disabled={inputValue.trim() === ''}
-          type='primary'
-          icon={<SendOutlined />}
-          onClick={() => addMessage(inputValue, true)}
-        />
-      </div>
+      {/*// TODO: Переделать на форму, добавить логику*/}
+      {/*<div style={{ display: 'flex', alignItems: 'flex-end', padding: '16px' }}>*/}
+      {/*  <Input.TextArea*/}
+      {/*    style={{ flex: 1, marginRight: '8px' }}*/}
+      {/*    value={inputValue}*/}
+      {/*    onChange={(e) => setInputValue(e.target.value)}*/}
+      {/*    onPressEnter={handleEnterPress}*/}
+      {/*    placeholder='Введите ваш вопрос и нажмите Enter'*/}
+      {/*  />*/}
+      {/*  <Button*/}
+      {/*    disabled={inputValue.trim() === ''}*/}
+      {/*    type='primary'*/}
+      {/*    icon={<SendOutlined />}*/}
+      {/*    onClick={() => addMessage(inputValue, true)}*/}
+      {/*  />*/}
+      {/*</div>*/}
     </div>
   )
 }
