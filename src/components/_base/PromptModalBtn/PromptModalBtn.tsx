@@ -31,7 +31,7 @@ export const PromptModalBtn: FCC<PromptModalBtnProps> = ({
         icon={<FileTextOutlined />}
         onClick={handleIsOpen}
       >
-        {t('Промпт')}
+        {t('Данные для формирования запроса')}
       </Button>
       <Modal
         title={t('Дополнительные данные для формирования запроса в LLM')}

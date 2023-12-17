@@ -7,16 +7,23 @@ import { RightCircleOutlined } from '@ant-design/icons'
 import { useTranslation } from 'src/hooks'
 
 interface GoToEntityDetailProps {
+  tooltip?: string
   url: string
   text?: string
+  target?: string
 }
-export const GoToEntityDetail: FCC<GoToEntityDetailProps> = ({ url, text }) => {
+export const GoToEntityDetail: FCC<GoToEntityDetailProps> = ({
+  tooltip,
+  url,
+  text,
+  target,
+}) => {
   const { t } = useTranslation()
   return (
     <Space size='middle'>
       {text || null}
-      <NavLink to={url}>
-        <Tooltip title={t('Перейти к детальной странице')} placement={'top'}>
+      <NavLink to={url} target={target}>
+        <Tooltip title={tooltip || t('Перейти')} placement={'top'}>
           <Button
             type='text'
             icon={<RightCircleOutlined />}

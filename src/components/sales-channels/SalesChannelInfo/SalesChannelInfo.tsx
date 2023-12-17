@@ -26,6 +26,7 @@ export const SalesChannelInfo: FCC<SalesChannelInfoProps> = ({
       open={isOpen}
       title={title}
       onOk={onOk}
+      width={800}
       onCancel={onCancel}
       footer={[
         <Button type={'primary'} key='ok' onClick={onOk}>

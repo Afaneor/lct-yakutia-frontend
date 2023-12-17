@@ -124,7 +124,9 @@ export const ProjectPage: FCC = () => {
               title={`${t('Продукт')}: ${data?.data?.product?.name}`}
               extra={
                 <GoToEntityDetail
-                  url={`/${ProductsRoutesNames.PRODUCTS}/${data?.data?.product?.id}`}
+                  tooltip={t('Перейти к источнику')}
+                  url={data?.data?.product?.link}
+                  target={'_blank'}
                 />
               }
             >
