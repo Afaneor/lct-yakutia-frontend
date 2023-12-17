@@ -1,7 +1,18 @@
-import { BaseModel, BaseModelProps, LLM_MODEL } from 'src/models'
+import {
+  BaseModel,
+  BaseModelProps,
+  LLM_MODEL,
+  UsersModelProps,
+  UsersRequestsFields,
+} from 'src/models'
 
-export interface MessagesFields extends BaseModelProps {
+export interface MessageFields extends BaseModelProps {
   text: string
+  message_type: string
+  status: string
+  request_data: UsersRequestsFields
+  parent: MessageFields
+  user: UsersModelProps
 }
 
 export class MessagesModel extends BaseModel {

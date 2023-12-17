@@ -1,10 +1,14 @@
 import React from 'react'
 import { FCC } from 'src/types'
-import { PageWrapper, PaginatedTable, PromptModalBtn } from 'src/components'
+import {
+  PageWrapper,
+  PaginatedTable,
+  PromptModalBtn,
+  LoadDataModal,
+} from 'src/components'
 import { useTranslation } from 'src/hooks'
 import { UsersPageActions } from 'src/components/users/UsersPageActions'
 import { Columns } from 'src/pages/usersRequests/Columns'
-import LoadDataModal from '../../../components/_base/LoadDataModal/LoadDataModal'
 import { useNavigate, useParams } from 'react-router-dom'
 import { usePaginatedFetchData } from 'src/services/base/usePaginatedFetchData'
 import { ProjectSalesChannelModel, UsersRequestsModel } from 'src/models'
@@ -28,12 +32,9 @@ export const RequestsPage: FCC = () => {
   const handleIsOpen = () => {
     setIsOpen(true)
   }
-  const handleIsClose = () => {
-    setIsOpen(false)
-  }
+
   const {
     data,
-    refetch,
     id,
     isLoading,
     handleUpdate,
@@ -50,6 +51,7 @@ export const RequestsPage: FCC = () => {
     rowData,
     fetchNextPage,
     setFilters,
+    refetch,
     isFetching,
     isLoading: isLoadingTableData,
     page,
@@ -62,6 +64,10 @@ export const RequestsPage: FCC = () => {
       enabled: !!projectSalesChannelId,
     },
   })
+  const handleIsClose = () => {
+    setIsOpen(false)
+    refetch()
+  }
   return (
     <PageWrapper
       title={title}
@@ -95,6 +101,7 @@ export const RequestsPage: FCC = () => {
         pageSize={pageSize}
         page={page}
         dataCount={dataCount}
+        // @ts-ignore
         columns={columns}
         isLoading={isLoadingTableData || isFetching}
         onTableChange={handlePaginationChange}

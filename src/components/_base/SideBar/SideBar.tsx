@@ -3,6 +3,7 @@ import { FCC } from 'src/types'
 import { Layout, Menu, Typography } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { CurrentUser } from '../CurrentUser'
+import { APP_NAME } from 'src/constants'
 const { Sider } = Layout
 const { Title } = Typography
 
@@ -55,7 +56,7 @@ export const SideBar: FCC<SideBarProps> = ({ sideBarItems }) => {
                 color: '#fff',
               }}
             >
-              GENA
+              {APP_NAME}
             </Title>
           </h1>
           <Menu

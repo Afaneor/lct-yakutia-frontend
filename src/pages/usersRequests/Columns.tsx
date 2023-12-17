@@ -3,7 +3,9 @@ import { useTranslation } from 'src/hooks'
 import { useGetDisplayNameFromChoices } from 'src/hooks/useGetDisplayName'
 import { BaseModel, UsersRequestsFields } from 'src/models'
 import { ManOutlined, WomanOutlined } from '@ant-design/icons'
-import { Space, Tooltip } from 'antd'
+import { Space, Tooltip, Typography } from 'antd'
+import { MessageFields } from 'src/models/Messages'
+const { Text } = Typography
 
 export const Columns = (model: typeof BaseModel) => {
   const { t } = useTranslation()
@@ -42,11 +44,6 @@ export const Columns = (model: typeof BaseModel) => {
       },
     },
     {
-      title: t('Регион'),
-      dataIndex: 'client_data.reg_region_nm',
-      width: '15%',
-    },
-    {
       title: t('Кластер клиента'),
       dataIndex: 'client_data.super_clust',
       width: '15%',
@@ -54,10 +51,15 @@ export const Columns = (model: typeof BaseModel) => {
     {
       title: t('Источник данных'),
       dataIndex: 'source_client_info',
+      width: '10%',
     },
     {
-      title: t('Этап'),
+      title: t('Тип успешности'),
       dataIndex: 'success_type',
+      width: '10%',
+      render: (success_type: string) => {
+        return getDisplayName(model.modelName, 'success_type', success_type)
+      },
     },
     {
       title: t('Статус'),
@@ -66,6 +68,24 @@ export const Columns = (model: typeof BaseModel) => {
       width: '10%',
       render: (status: string) => {
         return getDisplayName(model.modelName, 'status', status)
+      },
+    },
+    {
+      title: t('Маркетинговое предложение'),
+      dataIndex: 'actual_message',
+      render: (message: MessageFields, record: UsersRequestsFields) => {
+        if (!message) {
+          if (record.status === 'initial') {
+            return t('Hе формировалось')
+          } else if (record.status === 'in_progress') {
+            return t('Формируется')
+          }
+        }
+        return (
+          <Tooltip title={message.text} placement={'top'}>
+            <Text>{message.text}</Text>
+          </Tooltip>
+        )
       },
     },
   ]

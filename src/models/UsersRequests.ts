@@ -5,6 +5,7 @@ import {
   ProjectSalesChannelFields,
   UsersModelProps,
 } from 'src/models'
+import { MessageFields } from 'src/models/Messages'
 
 export interface UsersRequestsFields extends BaseModelProps {
   project_sale_channel: ProjectSalesChannelFields
@@ -15,7 +16,7 @@ export interface UsersRequestsFields extends BaseModelProps {
   client_data_decoding: Record<string, any>
   status: string
   success_type: string
-  messages: any[]
+  messages: MessageFields[]
   actual_message: string
   permission_rules: Record<string, any>
 }

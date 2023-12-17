@@ -1,34 +1,30 @@
 import React, { useState } from 'react'
-import { Input, Button, List, Avatar } from 'antd'
+import styles from './Chat.module.scss'
+import { Input, Button, Row, Card, Select, Space, Form } from 'antd'
 import { SendOutlined } from '@ant-design/icons'
+import { FCC } from 'src/types'
+import { useGetChoicesListFromChoices } from 'src/hooks/useGetDisplayName'
+import { MessageFields, MessagesModel } from 'src/models/Messages'
 import { useTranslation } from 'src/hooks'
 
-interface Message {
-  id: number
-  text: string
-  isUser: boolean
+interface ChatProps {
+  isLoading?: boolean
+  messages: MessageFields[]
+  onChangeMessageStatus?: (messageId: number | string, status: string) => void
 }
 
-export const Chat: React.FC = () => {
+const messagesModel = MessagesModel
+export const Chat: FCC<ChatProps> = ({
+  messages,
+  onChangeMessageStatus,
+  isLoading,
+}) => {
+  const getChoicesListFromChoices = useGetChoicesListFromChoices()
   const { tF } = useTranslation()
-  const chatRef = React.useRef<HTMLDivElement>(null)
-
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: tF('Сформируйте мне предложение со следующими характеристиками:'),
-      isUser: false,
-    },
-  ])
   const [inputValue, setInputValue] = useState<string>('')
 
   const addMessage = (text: string, isUser: boolean) => {
-    const newMessage: Message = {
-      id: messages.length + 1,
-      text,
-      isUser,
-    }
-    setMessages([...messages, newMessage])
+    // Логика обработки сообщения
     setInputValue('')
   }
 
@@ -40,46 +36,67 @@ export const Chat: React.FC = () => {
       }
     }
   }
-  // Автоматическая прокрутка чата при добавлении новых сообщений
+
   React.useEffect(() => {
-    if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight
-    }
+    // Логика обработки новых сообщений
   }, [messages])
 
+  const statusOptions = getChoicesListFromChoices(
+    messagesModel.modelName,
+    'status'
+  )?.map((option: Record<string, any>) => ({
+    ...option,
+    label: option.display_name,
+  }))
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        height: 'calc(100vh - 240px)',
-      }}
-    >
-      <div
-        ref={chatRef}
-        style={{ flex: 1, overflowY: 'auto', padding: '16px' }}
-      >
-        {messages.map((message) => (
-          <div
+    <div className={styles.container}>
+      <div style={{ overflowY: 'auto', padding: '16px' }}>
+        {messages?.map((message) => (
+          <Row
             key={message.id}
-            style={{
-              textAlign: message.isUser ? 'right' : 'left',
-              marginBottom: '8px',
-            }}
+            justify={message.message_type === 'system' ? 'start' : 'end'}
+            style={{ paddingBottom: '16px' }}
           >
-            <div
+            <Card
               style={{
-                backgroundColor: message.isUser ? '#1890ff' : '#1890ff33',
-                padding: '8px',
-                borderRadius: '8px',
-                display: 'inline-block',
-                maxWidth: '50%',
+                backgroundColor:
+                  message.message_type !== 'system'
+                    ? 'rgba(22,119,255,0.49)'
+                    : '',
+                maxWidth: '60%',
               }}
+              actions={
+                message.message_type === 'system'
+                  ? [
+                      <Space
+                        key='status'
+                        direction={'vertical'}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          padding: '0 16px',
+                        }}
+                      >
+                        <Form initialValues={{ status: message.status }}>
+                          <Form.Item label={tF('Статус')} name='status'>
+                            <Select
+                              loading={isLoading}
+                              options={statusOptions}
+                              onChange={(value) => {
+                                onChangeMessageStatus?.(message.id, value)
+                              }}
+                            />
+                          </Form.Item>
+                        </Form>
+                      </Space>,
+                    ]
+                  : []
+              }
             >
-              {message.text}
-            </div>
-          </div>
+              <Space direction='vertical'>{message.text}</Space>
+            </Card>
+          </Row>
         ))}
       </div>
       <div style={{ display: 'flex', alignItems: 'flex-end', padding: '16px' }}>
