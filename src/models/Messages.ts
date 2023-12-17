@@ -21,4 +21,8 @@ export class MessagesModel extends BaseModel {
   static url() {
     return `${LLM_MODEL}/messages/`
   }
+
+  static multipleCreationUrl() {
+    return `${LLM_MODEL}/messages/multiple-creation/`
+  }
 }

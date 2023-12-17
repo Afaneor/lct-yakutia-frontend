@@ -1,7 +1,6 @@
-import { BarChartOutlined, MessageOutlined } from '@ant-design/icons'
+import { MessageOutlined } from '@ant-design/icons'
 import React, { lazy } from 'react'
 import { useTranslation } from 'src/hooks'
-import { Messages } from '@openreplay/tracker'
 
 const Gena = lazy(() => import('src/pages/gena/GenaPage/GenaPage'))
 

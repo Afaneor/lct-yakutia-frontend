@@ -8,7 +8,7 @@ import { ProjectSalesChannelModel } from 'src/models'
 import { useParams } from 'react-router-dom'
 import { useFetchItems, useUpdateItem } from 'src/services/base/hooks'
 import { MessagesModel } from 'src/models/Messages'
-import { APP_NAME } from 'src/constants'
+import { APP_NAME_SHORT } from 'src/constants'
 
 const model = MessagesModel
 export const GenaPage: FCC = () => {
@@ -33,6 +33,7 @@ export const GenaPage: FCC = () => {
 
   const { data: messagesData } = useFetchItems(model, {
     request_data: requestId,
+    limit: 1000,
   })
 
   const { mutate: update, isLoading: isLoadingUpdate } = useUpdateItem(model)
@@ -58,7 +59,7 @@ export const GenaPage: FCC = () => {
 
   return (
     <PageWrapper
-      title={t('Действуй, Гена!')}
+      title={APP_NAME_SHORT}
       breadcrumbs={[
         {
           title: t('Проекты'),
@@ -74,7 +75,7 @@ export const GenaPage: FCC = () => {
         },
       ]}
       description={t(
-        `Здесь ${APP_NAME} поможет тебе сгенерировать персональные маркетинговые предложения для клиентов`
+        `Здесь ${APP_NAME_SHORT} поможет сгенерировать персональные маркетинговые предложения для клиентов`
       )}
     >
       <Row justify={'center'}>

@@ -12,22 +12,61 @@ import { Columns } from 'src/pages/usersRequests/Columns'
 import { useNavigate, useParams } from 'react-router-dom'
 import { usePaginatedFetchData } from 'src/services/base/usePaginatedFetchData'
 import { ProjectSalesChannelModel, UsersRequestsModel } from 'src/models'
-import { Space } from 'antd'
+import { message, Space } from 'antd'
 import { useEntityPage } from 'src/pages/hooks/useEntityPage'
+import { useExtraActionsPost, useUpdateItem } from 'src/services/base/hooks'
+import { MessagesModel } from 'src/models/Messages'
 
 const usersRequestsModel = UsersRequestsModel
 const model = ProjectSalesChannelModel
 
 export const RequestsPage: FCC = () => {
-  const [title] = React.useState('Запросы формирования предложения')
-  const navigate = useNavigate()
-  const [isOpen, setIsOpen] = React.useState(false)
   const { t } = useTranslation()
-  const columns = Columns(usersRequestsModel)
+  const navigate = useNavigate()
+  const [title] = React.useState('Запросы для формирования предложения')
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([])
+
   const { projectSalesChannelId } = useParams<{
     id: string
     projectSalesChannelId: string
   }>()
+
+  const { mutate: userRequestUpdate } = useUpdateItem(
+    usersRequestsModel,
+    'usersRequestsUpdate'
+  )
+
+  const handleUserRequestUpdate = (
+    recordId: string | number,
+    dataIndex: string,
+    val: unknown
+  ) => {
+    userRequestUpdate(
+      {
+        id: recordId,
+        fields: {
+          [dataIndex]: val,
+        },
+      },
+      {
+        onSuccess: () => {
+          message.success('Запрос успешно обновлен')
+          refetch()
+        },
+        onError: (err) => {
+          message.error('Не удалось обновить запрос')
+          console.log(err)
+        },
+      }
+    )
+  }
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys((prevState) => {
+      return [...prevState, ...newSelectedRowKeys]
+    })
+  }
 
   const handleIsOpen = () => {
     setIsOpen(true)
@@ -49,8 +88,6 @@ export const RequestsPage: FCC = () => {
   const {
     dataCount,
     rowData,
-    fetchNextPage,
-    setFilters,
     refetch,
     isFetching,
     isLoading: isLoadingTableData,
@@ -64,10 +101,41 @@ export const RequestsPage: FCC = () => {
       enabled: !!projectSalesChannelId,
     },
   })
+
+  const { mutate: createOffers } = useExtraActionsPost('createOffers')
+  const handleCreateOffers = () => {
+    createOffers(
+      {
+        url: MessagesModel.multipleCreationUrl(),
+        record: {
+          ids: selectedRowKeys,
+          project_sale_channel: projectSalesChannelId,
+        },
+      },
+      {
+        onSuccess: () => {
+          message.success(
+            'Запрос на формирование предложений успешно отправлен'
+          )
+          setSelectedRowKeys([])
+          refetch()
+        },
+        onError: (err) => {
+          message.error(
+            'Не удалось отправить запрос на формирование предложений'
+          )
+          console.log(err)
+        },
+      }
+    )
+  }
   const handleIsClose = () => {
     setIsOpen(false)
     refetch()
   }
+
+  const columns = Columns(usersRequestsModel, handleUserRequestUpdate)
+
   return (
     <PageWrapper
       title={title}
@@ -91,7 +159,11 @@ export const RequestsPage: FCC = () => {
             isLoading={isLoading}
             onUpdate={(text) => handleUpdate('prompt', text)}
           />
-          <UsersPageActions onUpload={handleIsOpen} />
+          <UsersPageActions
+            isDisabled={selectedRowKeys.length === 0}
+            onUpload={handleIsOpen}
+            onCreate={handleCreateOffers}
+          />
         </Space>
       }
     >
@@ -107,6 +179,10 @@ export const RequestsPage: FCC = () => {
         onTableChange={handlePaginationChange}
         onRowClick={({ record }) => {
           navigate(`${record.id}`)
+        }}
+        rowSelection={{
+          selectedRowKeys,
+          onChange: onSelectChange,
         }}
       />
     </PageWrapper>

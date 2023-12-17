@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Col, Row, Table } from 'antd'
+import styles from './PaginatedTable.module.scss'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { FilterValue, SorterResult } from 'antd/es/table/interface'
 import { useWindowSize } from 'src/hooks'
@@ -20,6 +21,10 @@ interface PaginatedTableProps {
   dataSource: any[]
   isLoading?: boolean
   onDelete?: (record: BaseModel) => void
+  rowSelection: {
+    selectedRowKeys: React.Key[]
+    onChange: (selectedRowKeys: React.Key[]) => void
+  }
   onTableChange: (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue | null>,
@@ -49,6 +54,7 @@ export const PaginatedTable: React.FC<PaginatedTableProps> = ({
   isLoading,
   onTableChange,
   onDelete,
+  rowSelection,
 }) => {
   const advancedColumns = getAdvancedColumns(columns)
   if (onDelete)
@@ -77,12 +83,7 @@ export const PaginatedTable: React.FC<PaginatedTableProps> = ({
   const { height } = useWindowSize()
 
   return (
-    <div
-      style={{
-        border: '1px solid #e8e8e8',
-        borderRadius: '8px',
-      }}
-    >
+    <div className={styles.container}>
       <Table
         columns={advancedColumns}
         rowKey={(record) => record.id}
@@ -98,6 +99,7 @@ export const PaginatedTable: React.FC<PaginatedTableProps> = ({
         loading={isLoading}
         scroll={{ x: 500, y: height - 270 }}
         onChange={onTableChange}
+        rowSelection={rowSelection}
         onRow={(record, rowIndex) => ({
           onClick: (event) => {
             onRowClick?.({ record, rowIndex, event })

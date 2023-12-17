@@ -1,21 +1,32 @@
 import React from 'react'
 import { useTranslation } from 'src/hooks'
-import { useGetDisplayNameFromChoices } from 'src/hooks/useGetDisplayName'
+import {
+  useGetChoicesListFromChoicesAsOptions,
+  useGetDisplayNameFromChoices,
+} from 'src/hooks/useGetDisplayName'
 import { BaseModel, UsersRequestsFields } from 'src/models'
 import { ManOutlined, WomanOutlined } from '@ant-design/icons'
-import { Space, Tooltip, Typography } from 'antd'
+import { Select, Space, Tooltip, Typography } from 'antd'
 import { MessageFields } from 'src/models/Messages'
 const { Text } = Typography
 
-export const Columns = (model: typeof BaseModel) => {
+export const Columns = (
+  model: typeof BaseModel,
+  handleUpdateCol: (
+    recordId: number | string,
+    dataIndex: string,
+    val: unknown
+  ) => void
+) => {
   const { t } = useTranslation()
   const getDisplayName = useGetDisplayNameFromChoices()
+  const getOptions = useGetChoicesListFromChoicesAsOptions()
 
   return [
     {
       title: t('Клиент ID'),
       dataIndex: 'client_id',
-      width: '10%',
+      width: '5%',
     },
     {
       title: t('Возраст'),
@@ -56,9 +67,22 @@ export const Columns = (model: typeof BaseModel) => {
     {
       title: t('Тип успешности'),
       dataIndex: 'success_type',
-      width: '10%',
-      render: (success_type: string) => {
-        return getDisplayName(model.modelName, 'success_type', success_type)
+      width: '15%',
+      render: (success_type: string, record: UsersRequestsFields) => {
+        return (
+          <Select
+            value={success_type}
+            style={{ width: '100%' }}
+            options={getOptions(model.modelName, 'success_type')}
+            onClick={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+            }}
+            onChange={(value) => {
+              handleUpdateCol(record.id, 'success_type', value)
+            }}
+          />
+        )
       },
     },
     {

@@ -5,7 +5,8 @@ import { QueryKey, useQueryClient } from '@tanstack/react-query'
 
 export interface Choice {
   value: string
-  displayName: string
+  displayName?: string
+  display_name: string
 }
 
 export const useGetDisplayNameFromChoices = () => {
@@ -34,6 +35,21 @@ export const useGetChoicesListFromChoices = () => {
       queryClient.getQueryData([`${modelName}Choices`] as QueryKey) || {}
     if (choices && choices[type]) {
       return choices[type]?.choices
+    }
+    return []
+  }
+}
+export const useGetChoicesListFromChoicesAsOptions = () => {
+  const queryClient = useQueryClient()
+  return (modelName: string, type: string) => {
+    const choices: any =
+      queryClient.getQueryData([`${modelName}Choices`] as QueryKey) || {}
+    if (choices && choices[type]) {
+      return choices[type]?.choices?.map((item: Choice) => ({
+        ...item,
+        value: item.value,
+        label: item.display_name,
+      }))
     }
     return []
   }
