@@ -2,70 +2,52 @@ import React from 'react'
 import styles from './StatisticsPage.module.scss'
 import { FCC } from 'src/types'
 import { PageWrapper, PaginatedTable } from 'src/components'
-import { useTablePageParams, useTranslation } from 'src/hooks'
-import { UsersPageActions } from 'src/components/users/UsersPageActions'
-import { Columns } from 'src/pages/users/Columns'
-import LoadDataModal from '../../../components/_base/LoadDataModal/LoadDataModal'
+import { useTranslation } from 'src/hooks'
+import { Columns } from 'src/pages/usersRequests/Columns'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ProjectUsersModel } from 'src/models/ProjectsUsers'
 import { usePaginatedFetchData } from 'src/services/base/usePaginatedFetchData'
 
-interface UsersPageProps {
-  prop?: any
-}
-
 const model = ProjectUsersModel
 
-export const UsersPage: FCC<UsersPageProps> = ({ prop }) => {
+export const UsersPage: FCC = () => {
   const navigate = useNavigate()
-  const [isOpen, setIsOpen] = React.useState(false)
   const { t } = useTranslation()
   const columns = Columns()
-  const { id, salesChannelId } = useParams<{
+  const { id } = useParams<{
     id: string
     salesChannelId: string
   }>()
 
-  const handleIsOpen = () => {
-    setIsOpen(true)
-  }
-  const handleIsClose = () => {
-    setIsOpen(false)
-  }
-
   const {
     dataCount,
     rowData,
-    refetch,
-    fetchNextPage,
-    setFilters,
     isFetching,
     isLoading,
+    page,
+    pageSize,
+    handlePaginationChange,
   }: any = usePaginatedFetchData({
     model,
-    defFilters: {
-      // ...companyFilter,
-      // ...getAllFilterSP(),
-    },
+    defFilters: { project: id },
     options: {
-      // enabled: !!getAllFilterSP()?.getValue(filterKey),
+      enabled: !!id,
     },
   })
-
-  const { page, pageSize } = useTablePageParams(10, 0)
   return (
     <PageWrapper
       title={t('Пользователи')}
+      itemsCount={dataCount}
       breadcrumbs={[{ title: t('Пользователи'), href: '/users' }]}
-      actions={<UsersPageActions onUpload={handleIsOpen} />}
     >
-      <LoadDataModal isOpen={isOpen} onClose={handleIsClose} />
       <PaginatedTable
+        dataSource={rowData}
         pageSize={pageSize}
         page={page}
-        dataCount={1}
+        dataCount={dataCount}
         columns={columns}
-        filter={{ project: id, salesChannel: salesChannelId }}
+        isLoading={isLoading || isFetching}
+        onTableChange={handlePaginationChange}
         onRowClick={({ record }) => {
           navigate(`${record.id.value}`)
         }}

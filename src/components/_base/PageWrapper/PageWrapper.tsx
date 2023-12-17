@@ -13,6 +13,8 @@ import {
 } from 'antd'
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
 import EmptyData from '../EmptyData/EmptyData'
+import { NavLink } from 'react-router-dom'
+import { LayoutLoading } from 'src/components'
 
 const { Content } = Layout
 const { Title, Text } = Typography
@@ -22,6 +24,8 @@ export interface BreadCrumbItemProps {
   title: React.ReactNode
 }
 interface PageWrapperProps {
+  isLoading?: boolean
+  noEmptyData?: boolean
   title?: string
   description?: string
   actions?: React.ReactNode
@@ -31,18 +35,30 @@ interface PageWrapperProps {
 
 export const PageWrapper: FCC<PageWrapperProps> = ({
   actions,
+  isLoading,
+  noEmptyData,
   title,
   children,
   description,
   breadcrumbs = [],
   itemsCount,
 }) => {
+  const prepareBreadcrumbs = breadcrumbs.map((item) => {
+    return {
+      ...item,
+      title: <NavLink to={item?.href || ''}>{item.title}</NavLink>,
+    }
+  })
   const breadcrumbItems = [
     {
       href: '',
-      title: <HomeOutlined />,
+      title: (
+        <NavLink to={'/'}>
+          <HomeOutlined />
+        </NavLink>
+      ),
     },
-    ...breadcrumbs,
+    ...prepareBreadcrumbs,
   ]
   return (
     <Layout>
@@ -78,8 +94,8 @@ export const PageWrapper: FCC<PageWrapperProps> = ({
             <Text type='secondary'>{description}</Text>
           </div>
         </div>
-        {itemsCount === 0 ? <EmptyData /> : null}
-        {children}
+        {!noEmptyData && itemsCount === 0 ? <EmptyData /> : null}
+        {isLoading ? <LayoutLoading /> : children}
       </Content>
     </Layout>
   )

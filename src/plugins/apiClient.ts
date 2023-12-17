@@ -19,7 +19,6 @@ apiClient.interceptors.request.use(
   (config: any) => {
     const basicAuth = localStorage.getItem(BASIC_AUTH_STORAGE_KEY)
     if (basicAuth) {
-      console.log('basicAuth', basicAuth)
       config.headers.Authorization = `Basic ${basicAuth}`
     }
     return config

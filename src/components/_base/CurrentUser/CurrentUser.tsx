@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Avatar, Button, Space, Tooltip, Typography } from 'antd'
+import { Avatar, Button, Row, Tooltip, Typography } from 'antd'
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons'
 import { useTranslation } from 'src/hooks'
 import {
@@ -20,8 +20,12 @@ export const CurrentUser: React.FC = () => {
     window.location.href = '/'
   }
   return (
-    <Space>
-      <Avatar icon={<UserOutlined />} style={{ marginRight: '8px' }} />
+    <Row justify={'space-between'}>
+      <Avatar
+        size={'small'}
+        icon={<UserOutlined />}
+        style={{ marginRight: '8px' }}
+      />
       <Text
         ellipsis={{ tooltip: currentUserInfo?.email }}
         style={{
@@ -34,6 +38,6 @@ export const CurrentUser: React.FC = () => {
       <Tooltip title={t('Выйти')}>
         <Button type='link' icon={<LogoutOutlined />} onClick={onLogout} />
       </Tooltip>
-    </Space>
+    </Row>
   )
 }

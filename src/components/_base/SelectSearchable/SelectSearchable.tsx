@@ -10,7 +10,7 @@ const { Option } = Select
 
 interface SelectSearchableProps {
   mode?: 'multiple' | 'tags'
-  value?: string | number | null
+  value?: any
   model: typeof BaseModel
   onChange?: (value: string | number | null) => void
 }

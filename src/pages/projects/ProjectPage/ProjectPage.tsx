@@ -1,20 +1,30 @@
-import React, { lazy, Suspense, useMemo } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { FCC } from 'src/types'
-import { Col, Divider, notification, Row } from 'antd'
-import { GoToEntityDetail, SalesChannelListItem } from 'src/components'
+import { Button, Col, Divider, notification, Row, Space, Tooltip } from 'antd'
+import {
+  GoToEntityDetail,
+  SalesChannelListItem,
+  CardDetailSection,
+} from 'src/components'
 import { useTranslation } from 'src/hooks'
-import { Outlet, useParams } from 'react-router-dom'
-import { ChannelActionsRoutesNames } from 'src/routes/projectsRoutes'
+import { NavLink, Outlet, useParams } from 'react-router-dom'
 import {
   useExtraActionsPost,
   useFetchOneItem,
   useUpdateItem,
 } from 'src/services/base/hooks'
-import { ProjectSalesChannelModel, ProjectsModel } from 'src/models'
+import {
+  ProjectSalesChannelModel,
+  ProjectsModel,
+  SalesChannelFields,
+} from 'src/models'
 import { ProductsRoutesNames } from 'src/routes/productsRoutes'
 import { AddSalesChannelsToProject } from 'src/components/projects/AddSalesChannelsToProject/AddSalesChannelsToProject'
-import styles from 'src/pages/products/ProductPage/ProductPage.module.scss'
-import CardDetailSection from '../../../components/_base/CardDetailSection/CardDetailSection'
+import { ProjectsUsersRoutesNames } from 'src/routes/projectsUserRoutes'
+import { AimOutlined } from '@ant-design/icons'
+import { useEntityPage } from 'src/pages/hooks/useEntityPage'
+import { ProjectsRoutesNames } from 'src/routes/projectsRoutes'
+import SettingsButton from 'src/components/projects/ProjectSettingsDropdown/ProjectSettingsDropdown'
 const EditableMarkdown = React.lazy(
   () => import('src/components/_base/EditableMarkdown/EditableMarkdown')
 )
@@ -23,67 +33,22 @@ const PageWrapper = lazy(
   () => import('src/components/_base/PageWrapper/PageWrapper')
 )
 
+const model = ProjectsModel
 export const ProjectPage: FCC = () => {
   const { t } = useTranslation()
-  const { id } = useParams<{ id: string }>()
   const [isShowAddSalesChannelsModal, setIsShowAddSalesChannelsModal] =
     React.useState(false)
 
   const {
     data,
     refetch,
+    handleUpdate,
   }: {
     data: any
     isLoading: boolean
     refetch: CallableFunction
-  } = useFetchOneItem({
-    model: ProjectsModel,
-    id: Number(id),
-    options: {
-      enabled: !!id,
-    },
-  })
-
-  const channelsCardsFakeData = useMemo(() => {
-    return [
-      {
-        id: 1,
-        title: t('СМС'),
-        to: `${ChannelActionsRoutesNames.CHANNELS}/sms`,
-      },
-      {
-        id: 2,
-        title: t('ПУШ'),
-        to: `${ChannelActionsRoutesNames.CHANNELS}/push`,
-      },
-      {
-        id: 3,
-        title: t('КУРЬЕР'),
-        to: `${ChannelActionsRoutesNames.CHANNELS}/courier`,
-      },
-    ]
-  }, [t])
-
-  const { mutate: updateProject } = useUpdateItem(ProjectsModel)
-
-  const handleUpdate = (field: string, text: string) => {
-    updateProject(
-      { id: data?.data?.id, fields: { [field]: text } },
-      {
-        onSuccess: () => {
-          refetch()
-          notification.success({
-            message: t('Успешно обновлено'),
-          })
-        },
-        onError: () => {
-          notification.error({
-            message: t('Не удалось обновить'),
-          })
-        },
-      }
-    )
-  }
+    handleUpdate: CallableFunction
+  } = useEntityPage(model)
 
   const {
     mutate: addSalesChannelsToProject,
@@ -125,12 +90,13 @@ export const ProjectPage: FCC = () => {
       breadcrumbs={[
         {
           title: t('Проекты'),
-          href: '/projects',
+          href: `/${ProjectsRoutesNames.PROJECTS}`,
         },
         {
           title: data?.data?.name,
         },
       ]}
+      actions={<SettingsButton />}
     >
       <>
         <Row gutter={[16, 16]}>
@@ -149,47 +115,44 @@ export const ProjectPage: FCC = () => {
               title={`${t('Продукт')}: ${data?.data?.product?.name}`}
               extra={
                 <GoToEntityDetail
-                  url={`/${ProductsRoutesNames.PRODUCTS}/${data?.data?.product?.id}`}
+                  tooltip={t('Перейти к источнику')}
+                  url={data?.data?.product?.link}
+                  target={'_blank'}
                 />
               }
             >
               {data?.data?.product?.description}
             </CardDetailSection>
           </Col>
-          <Col xs={24} xl={12}>
-            <CardDetailSection
-              title={t('Дополнительные данные для формирования запроса в LLM')}
-            >
-              {data?.data ? (
-                <EditableMarkdown
-                  text={data?.data?.prompt}
-                  onSave={(text) => handleUpdate('prompt', text)}
-                />
-              ) : null}
-            </CardDetailSection>
-          </Col>
-          <Col xs={24} xl={12}>
+          <Col xs={24}>
             <CardDetailSection
               title={t('Каналы связи')}
               extra={
-                <AddSalesChannelsToProject
-                  isLoading={isAddSalesChannelsToProjectLoading}
-                  visible={isShowAddSalesChannelsModal}
-                  onAdd={handleAddSalesChannelsToProject}
-                  onCancel={() => handleShowAddSalesChannelsModal(false)}
-                  onShowModal={() => handleShowAddSalesChannelsModal(true)}
-                />
+                <Space direction={'horizontal'}>
+                  <AddSalesChannelsToProject
+                    channels={data?.data?.projects_sales_channels.map(
+                      (channel: SalesChannelFields) => channel.id
+                    )}
+                    isLoading={isAddSalesChannelsToProjectLoading}
+                    visible={isShowAddSalesChannelsModal}
+                    onAdd={handleAddSalesChannelsToProject}
+                    onCancel={() => handleShowAddSalesChannelsModal(false)}
+                    onShowModal={() => handleShowAddSalesChannelsModal(true)}
+                  />
+                </Space>
               }
             >
-              <SalesChannelListItem data={data?.data?.sales_channels} />
+              <SalesChannelListItem
+                data={data?.data?.projects_sales_channels}
+              />
             </CardDetailSection>
           </Col>
           <Divider />
-          <Col xs={24}>
-            <CardDetailSection title={t('Статистика')}>
-              Тут будет статистика
-            </CardDetailSection>
-          </Col>
+          {/*<Col xs={24}>*/}
+          {/*  <CardDetailSection title={t('Статистика')}>*/}
+          {/*    Тут будет статистика*/}
+          {/*  </CardDetailSection>*/}
+          {/*</Col>*/}
         </Row>
         <Row gutter={[16, 16]}></Row>
         <Suspense>

@@ -1,4 +1,3 @@
-import { AttachTo } from 'src/components'
 import isEmpty from 'lodash/isEmpty'
 import type { RcFile, BeforeUploadFileType } from 'rc-upload/lib/interface'
 
@@ -8,7 +7,7 @@ import type { RcFile, BeforeUploadFileType } from 'rc-upload/lib/interface'
 export const useFileAsFormData = () => {
   return (
     file: Exclude<BeforeUploadFileType, File | boolean> | RcFile,
-    attachTo?: AttachTo
+    attachTo?: any
   ) => {
     const formData = new FormData()
     formData.append('file', file)

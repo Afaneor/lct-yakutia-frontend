@@ -1,15 +1,6 @@
 import { BaseModel, BaseModelProps, ProfilesModelProps } from 'src/models'
 import { PermissionRulesProps } from 'src/services/base/types'
 
-export enum Roles {
-  READ_ONLY_USER = 'read_only_user',
-  COMPANY_ADMIN = 'company_admin',
-  PLATFORM_ADMIN = 'platform_admin',
-}
-
-export interface UserRole {
-  [key: number]: Roles
-}
 export interface UsersModelProps extends BaseModelProps {
   profileId?: number
   username: string
@@ -23,7 +14,6 @@ export interface UsersModelProps extends BaseModelProps {
   is_active: boolean
   permissionRules: PermissionRulesProps
   profile: ProfilesModelProps
-  role: UserRole
   lastLogin: string
   twoFactor: boolean
 }

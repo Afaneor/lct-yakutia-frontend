@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import qs from 'qs'
+import React from 'react'
 import { Button, Col, Row, Table } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { FilterValue, SorterResult } from 'antd/es/table/interface'
 import { useWindowSize } from 'src/hooks'
 import { DeleteOutlined } from '@ant-design/icons'
-import type { GetComponentProps } from 'rc-table/lib/interface'
-import { NavLink } from 'react-router-dom'
+import { BaseModel } from 'src/models'
+import { getAdvancedColumns } from 'src/components/_base/PaginatedTable/utils'
+import { TableCurrentDataSource } from 'antd/es/table/interface'
 
 export interface Sorter extends SorterResult<Record<string, any>> {
   ordering: string
 }
 
-interface TableParams {
-  pagination?: TablePaginationConfig
-  sortField?: string
-  sortOrder?: string
-  filters?: Record<string, FilterValue>
-}
-
-const getRandomuserParams = (params: TableParams) => ({
-  results: params.pagination?.pageSize,
-  page: params.pagination?.current,
-  ...params,
-})
-
 interface PaginatedTableProps {
-  filter?: Record<string, any>
   columns: ColumnsType<Record<string, any>>
   pageSize: number
   page: number
   dataCount: number
+  dataSource: any[]
+  isLoading?: boolean
+  onDelete?: (record: BaseModel) => void
+  onTableChange: (
+    pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue | null>,
+    sorter:
+      | SorterResult<Record<string, any>>
+      | SorterResult<Record<string, any>>[],
+    extra: TableCurrentDataSource<Record<string, any>>
+  ) => void
   onRowClick?: ({
     record,
     rowIndex,
@@ -45,19 +42,22 @@ interface PaginatedTableProps {
 export const PaginatedTable: React.FC<PaginatedTableProps> = ({
   columns,
   onRowClick,
-  filter,
-  pageSize,
-  page,
   dataCount,
+  dataSource,
+  page,
+  pageSize,
+  isLoading,
+  onTableChange,
+  onDelete,
 }) => {
-  const advancedColumns = [
-    ...columns,
-    {
+  const advancedColumns = getAdvancedColumns(columns)
+  if (onDelete)
+    advancedColumns.push({
       title: '',
       dataIndex: '',
       key: 'x',
       width: '5%',
-      render: () => (
+      render: (record: Record<string, any>) => (
         <Row justify={'end'}>
           <Col>
             <Button
@@ -66,88 +66,15 @@ export const PaginatedTable: React.FC<PaginatedTableProps> = ({
               icon={<DeleteOutlined />}
               onClick={(event) => {
                 event.stopPropagation()
+                onDelete(record)
               }}
             />
           </Col>
         </Row>
       ),
-    },
-  ]
+    })
+
   const { height } = useWindowSize()
-  const [data, setData] = useState<Record<string, any>[]>()
-  const [loading, setLoading] = useState(false)
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      showQuickJumper: true,
-      position: ['bottomRight'],
-      current: page,
-      pageSize,
-      total: dataCount,
-    },
-  })
-
-  const fetchData = () => {
-    setLoading(true)
-    fetch(
-      `https://randomuser.me/api?${qs.stringify(
-        getRandomuserParams(tableParams)
-      )}`
-    )
-      .then((res) => res.json())
-      .then(({ results }) => {
-        setData(results)
-        setLoading(false)
-        setTableParams({
-          ...tableParams,
-          pagination: {
-            ...tableParams.pagination,
-            total: 200,
-            // 200 is mock data, you should read it from server
-            // total: data.totalCount,
-          },
-        })
-      })
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [JSON.stringify(tableParams)])
-
-  // const handleTableChange = (
-  //   pagination: TablePaginationConfig,
-  //   filters: Record<string, FilterValue>,
-  //   sorter: SorterResult<Record<string, any>>
-  // ) => {
-  //   setTableParams({
-  //     pagination,
-  //     filters,
-  //     ...sorter,
-  //   })
-  //
-  //   // `dataSource` is useless since `pageSize` changed
-  //   if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-  //     setData([])
-  //   }
-  // }
-
-  const handleTableChange = (
-    pagination: TablePaginationConfig,
-    filters: Record<string, any>,
-    sorter: Sorter | Record<string, any>
-  ) => {
-    const cOffset =
-      pagination.pageSize !== pageSize
-        ? 10
-        : pagination.current
-        ? (pagination.current - 1) * pagination.pageSize
-        : 10
-
-    const drfPagination = {
-      offset: cOffset,
-      limit: pagination?.pageSize || 10,
-    }
-    // onChange?.(drfPagination, filters, sorter)
-  }
 
   return (
     <div
@@ -156,16 +83,21 @@ export const PaginatedTable: React.FC<PaginatedTableProps> = ({
         borderRadius: '8px',
       }}
     >
-      {JSON.stringify(filter)}
       <Table
         columns={advancedColumns}
-        rowKey={(record) => record.login.uuid}
-        dataSource={data}
-        pagination={tableParams.pagination}
-        loading={loading}
+        rowKey={(record) => record.id}
+        dataSource={dataSource}
+        pagination={{
+          showQuickJumper: true,
+          showSizeChanger: true,
+          position: ['bottomCenter'],
+          current: page,
+          pageSize,
+          total: dataCount,
+        }}
+        loading={isLoading}
         scroll={{ x: 500, y: height - 270 }}
-        // @ts-ignore
-        onChange={handleTableChange}
+        onChange={onTableChange}
         onRow={(record, rowIndex) => ({
           onClick: (event) => {
             onRowClick?.({ record, rowIndex, event })

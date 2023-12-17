@@ -234,14 +234,16 @@ export const usePatchExtraActions = <FieldsType>(
  * Урл передается в мутации, а не при инициализации
  * @param qKey - ключ запроса для react-query
  * @param options
+ * @param params
  */
 export const useExtraActionsPost = <FieldsType>(
   qKey: string,
-  options?: UseQueryOptions
+  options?: UseQueryOptions,
+  params?: Record<string, any>
 ) => {
   return useMutation<unknown, unknown, any>({
     mutationFn: ({ url, record }: { url: string; record: FieldsType }) =>
-      BaseServices.postExtra(url, record),
+      BaseServices.postExtra(url, record, params),
     mutationKey: qKey,
     ...options,
   } as unknown as UseMutationOptions)

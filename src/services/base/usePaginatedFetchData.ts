@@ -1,14 +1,15 @@
 import BaseServices from 'src/services/base/BaseServices'
 import { useChoices } from 'src/services/base/hooks'
 import { BaseModel } from 'src/models'
-import { useFilter } from 'src/hooks'
+import { useFilter, useTablePageParams } from 'src/hooks'
 import { QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import { useMemo } from 'react'
+import { TablePaginationConfig } from 'antd/es/table'
+import { Sorter } from 'src/components'
 
 const fetchData = async ({ pageParam: offset = 0, filters, url }: any) => {
   return BaseServices.fetch(url, {
-    // offset,
     ...filters,
     limit: filters.limit || 10,
     offset: filters.offset || 0,
@@ -18,7 +19,6 @@ const fetchData = async ({ pageParam: offset = 0, filters, url }: any) => {
         return response.response
       }
       const nextPage = response.data?.next ? offset + filters.limit : undefined
-      // stagesCounter = response.data?.stagesCounter
       return {
         data: response.data.results,
         nextPage,
@@ -68,7 +68,7 @@ export const usePaginatedFetchData = <ModelType>({
     ({ pageParam }) =>
       fetchData({
         pageParam,
-        filters: { limit: 10, ...defFilters, ...filters },
+        filters: { limit: 10, offset: 0, ...defFilters, ...filters },
         url,
       }),
     {
@@ -91,10 +91,38 @@ export const usePaginatedFetchData = <ModelType>({
       location.reload()
     }
   })
+  const { page, pageSize } = useTablePageParams(filters.limit, filters.offset)
+  const handlePaginationChange = (
+    pagination: TablePaginationConfig,
+    filters: Record<string, any>,
+    sorter: Sorter | Record<string, any>
+  ) => {
+    const cOffset =
+      pagination.pageSize !== pageSize
+        ? 10
+        : pagination.current
+        ? (pagination.current - 1) * (pagination?.pageSize || 1)
+        : 10
+
+    const drfPagination = {
+      offset: pagination.pageSize !== pageSize ? 0 : cOffset,
+      limit: pagination?.pageSize || 10,
+    }
+    setFilters({
+      ...defFilters,
+      ...drfPagination,
+    })
+    // onChange?.(drfPagination, filters, sorter)
+    return { drfPagination, filters, sorter }
+  }
+
   return {
     rowData,
     ...infinityData,
     setFilters,
     dataCount,
+    page,
+    pageSize,
+    handlePaginationChange,
   }
 }

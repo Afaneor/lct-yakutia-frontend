@@ -107,10 +107,14 @@ export default class BaseServices {
     })
   }
 
-  static postExtra(url: string, fields?: any): Promise<any> {
+  static postExtra(
+    url: string,
+    fields?: any,
+    options?: Record<string, any>
+  ): Promise<any> {
     return new Promise((resolve, reject) => {
       apiClient
-        .post(addTrailingSlashToUrl(url), fields)
+        .post(addTrailingSlashToUrl(url), fields, options)
         .then((response: AxiosResponse) => {
           return resolve(response)
         })

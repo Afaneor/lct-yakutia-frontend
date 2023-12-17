@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, Suspense } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { useTranslation } from 'src/hooks'
-import { Spin } from 'antd'
+import { Button, Space, Spin } from 'antd'
 const MDEditor = React.lazy(() => import('@uiw/react-md-editor'))
 interface EditableMarkdownProps {
   text: string
@@ -73,12 +73,16 @@ const EditableMarkdown: React.FC<EditableMarkdownProps> = ({
             boxShadow: isHovered ? '0 0 0 1px #d9d9d9' : 'none',
             cursor: 'pointer',
             borderRadius: '6px',
+            padding: '5px',
           }}
           onClick={handleEdit}
         >
-          <Suspense fallback={<Spin spinning />}>
-            <ReactMarkdown>{markdown}</ReactMarkdown>
-          </Suspense>
+          <Space direction={'horizontal'}>
+            <Suspense fallback={<Spin spinning />}>
+              <ReactMarkdown>{markdown}</ReactMarkdown>
+            </Suspense>
+            <Button type='text' icon={<EditOutlined />} />
+          </Space>
         </div>
       )}
     </div>
