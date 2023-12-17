@@ -33,6 +33,7 @@ export * from './_base/PostgresForm'
 export * from './_base/MongoForm'
 export * from './_base/CsvForm'
 export * from './_base/InputJSON'
+export * from './_base/LoadDataModal'
 
 // typography components
 export * from './_typography/Text'

@@ -1,39 +1,85 @@
 import React from 'react'
 import { FCC } from 'src/types'
-import { PageWrapper, PaginatedTable, PromptModalBtn } from 'src/components'
-import { useTranslation } from 'src/hooks'
+import {
+  PageWrapper,
+  PaginatedTable,
+  PromptModalBtn,
+  LoadDataModal,
+} from 'src/components'
+import { selectionDefault, useSelectionBulk, useTranslation } from 'src/hooks'
 import { UsersPageActions } from 'src/components/users/UsersPageActions'
 import { Columns } from 'src/pages/usersRequests/Columns'
-import LoadDataModal from '../../../components/_base/LoadDataModal/LoadDataModal'
 import { useNavigate, useParams } from 'react-router-dom'
 import { usePaginatedFetchData } from 'src/services/base/usePaginatedFetchData'
 import { ProjectSalesChannelModel, UsersRequestsModel } from 'src/models'
-import { Space } from 'antd'
+import { message, Space } from 'antd'
 import { useEntityPage } from 'src/pages/hooks/useEntityPage'
+import { useExtraActionsPost, useUpdateItem } from 'src/services/base/hooks'
+import { MessagesModel } from 'src/models/Messages'
+import { RowSelectMethod } from 'antd/es/table/interface'
 
 const usersRequestsModel = UsersRequestsModel
 const model = ProjectSalesChannelModel
 
 export const RequestsPage: FCC = () => {
-  const [title] = React.useState('Запросы формирования предложения')
-  const navigate = useNavigate()
-  const [isOpen, setIsOpen] = React.useState(false)
   const { t } = useTranslation()
-  const columns = Columns(usersRequestsModel)
+  const navigate = useNavigate()
+  const [title] = React.useState('Запросы для формирования предложения')
+  const [isOpen, setIsOpen] = React.useState(false)
+  const { selections, handleSetSelections } = useSelectionBulk()
   const { projectSalesChannelId } = useParams<{
     id: string
     projectSalesChannelId: string
   }>()
 
+  const { mutate: userRequestUpdate } = useUpdateItem(
+    usersRequestsModel,
+    'usersRequestsUpdate'
+  )
+
+  const handleUserRequestUpdate = (
+    recordId: string | number,
+    dataIndex: string,
+    val: unknown
+  ) => {
+    userRequestUpdate(
+      {
+        id: recordId,
+        fields: {
+          [dataIndex]: val,
+        },
+      },
+      {
+        onSuccess: () => {
+          message.success('Запрос успешно обновлен')
+          refetch()
+        },
+        onError: (err) => {
+          message.error('Не удалось обновить запрос')
+          console.log(err)
+        },
+      }
+    )
+  }
+
+  const onSelectChange = (
+    selectedRowKeys: React.Key[],
+    selectedRows: any[],
+    rowSelectedType: Record<'type', RowSelectMethod>
+  ) => {
+    handleSetSelections({
+      selectedRows,
+      selectedRowKeys,
+      rowSelectedType,
+    })
+  }
+
   const handleIsOpen = () => {
     setIsOpen(true)
   }
-  const handleIsClose = () => {
-    setIsOpen(false)
-  }
+
   const {
     data,
-    refetch,
     id,
     isLoading,
     handleUpdate,
@@ -48,8 +94,7 @@ export const RequestsPage: FCC = () => {
   const {
     dataCount,
     rowData,
-    fetchNextPage,
-    setFilters,
+    refetch,
     isFetching,
     isLoading: isLoadingTableData,
     page,
@@ -62,6 +107,41 @@ export const RequestsPage: FCC = () => {
       enabled: !!projectSalesChannelId,
     },
   })
+
+  const { mutate: createOffers, isLoading: isLoadingCreateOffer } =
+    useExtraActionsPost('createOffers')
+  const handleCreateOffers = () => {
+    createOffers(
+      {
+        url: MessagesModel.multipleCreationUrl(),
+        record: {
+          requests_data: selections.selectedRowKeys,
+        },
+      },
+      {
+        onSuccess: () => {
+          message.success(
+            'Запрос на формирование предложений успешно отправлен'
+          )
+          handleSetSelections(selectionDefault)
+          refetch()
+        },
+        onError: (err) => {
+          message.error(
+            'Не удалось отправить запрос на формирование предложений'
+          )
+          console.log(err)
+        },
+      }
+    )
+  }
+  const handleIsClose = () => {
+    setIsOpen(false)
+    refetch()
+  }
+
+  const columns = Columns(usersRequestsModel, handleUserRequestUpdate)
+
   return (
     <PageWrapper
       title={title}
@@ -85,7 +165,12 @@ export const RequestsPage: FCC = () => {
             isLoading={isLoading}
             onUpdate={(text) => handleUpdate('prompt', text)}
           />
-          <UsersPageActions onUpload={handleIsOpen} />
+          <UsersPageActions
+            isLoading={isLoadingCreateOffer}
+            isDisabled={selections?.selectedRowKeys?.length === 0}
+            onUpload={handleIsOpen}
+            onCreate={handleCreateOffers}
+          />
         </Space>
       }
     >
@@ -95,11 +180,16 @@ export const RequestsPage: FCC = () => {
         pageSize={pageSize}
         page={page}
         dataCount={dataCount}
+        // @ts-ignore
         columns={columns}
         isLoading={isLoadingTableData || isFetching}
         onTableChange={handlePaginationChange}
         onRowClick={({ record }) => {
           navigate(`${record.id}`)
+        }}
+        rowSelection={{
+          selectedRowKeys: selections.selectedRowKeys,
+          onChange: onSelectChange,
         }}
       />
     </PageWrapper>

@@ -3,6 +3,7 @@ import { FCC } from 'src/types'
 import { Layout, Menu, Typography } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { CurrentUser } from '../CurrentUser'
+import { APP_NAME_SHORT } from 'src/constants'
 const { Sider } = Layout
 const { Title } = Typography
 
@@ -49,14 +50,16 @@ export const SideBar: FCC<SideBarProps> = ({ sideBarItems }) => {
               margin: '20px 0',
             }}
           >
-            <Title
-              level={3}
-              style={{
-                color: '#fff',
-              }}
-            >
-              GENA
-            </Title>
+            <NavLink to='/'>
+              <Title
+                level={3}
+                style={{
+                  color: '#fff',
+                }}
+              >
+                {APP_NAME_SHORT}
+              </Title>
+            </NavLink>
           </h1>
           <Menu
             theme='dark'

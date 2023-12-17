@@ -41,39 +41,7 @@ export const LoadDataModal: FCC<LoadDataModalProps> = ({
   const [activeTab, setActiveTab] = useState<LoadDataModalTabs>(
     LoadDataModalTabs.FILE
   )
-  const createFormData = useFileAsFormData()
 
-  // const {
-  //   mutate: createFile,
-  // }: {
-  //   mutate: CallableFunction
-  //   isLoading: boolean
-  // } = useCreateItem(filesModel, {
-  //   headers: {
-  //     'Content-Type': 'multipart/form-data',
-  //   },
-  // })
-  // const handleCreateFile = (actions: RcCustomRequestOptions) => {
-  //   const formDataFile = handleCreateFormData(actions.file, attachTo)
-  //   createFile(formDataFile, {
-  //     onSuccess: (response: typeof AxiosResponse) => {
-  //       onUploadSuccess(response?.data)
-  //     },
-  //     onError: () => {
-  //       onUploadError?.()
-  //     },
-  //   })
-  // }
-
-  const { mutate: addClientFromXLSX } = useExtraActionsPost(
-    'addClientFromXLSX',
-    undefined,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  )
   const createDataFromXlsx = ({ file, client_data_decoding }: any) => {
     const formData = new FormData()
     formData.append('file', file)
@@ -91,12 +59,12 @@ export const LoadDataModal: FCC<LoadDataModalProps> = ({
       .then((response: any) => {
         if (response.status === 201) {
           message.success(`${file.name} успешно загружен`, 5)
-        } else {
-          message.error(`${file.name} не удалось загрузить.`, 5)
+          onClose()
         }
       })
       .catch((error: any) => {
-        message.error(`Произошла ошибка: ${error.message}`)
+        message.error(`Произошла ошибка при загрузке файла ${file.name}`, 5)
+        console.error(error)
       })
       .finally(() => {
         // onSuccess('ok')

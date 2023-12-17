@@ -18,7 +18,7 @@ export const StatisticsRoutes = () => {
       to: StatisticsRoutesNames.STATISTICS,
       component: <Statistics />,
       icon: <DotChartOutlined />,
-      isNavLink: true,
+      isNavLink: false,
     },
   ]
 }
