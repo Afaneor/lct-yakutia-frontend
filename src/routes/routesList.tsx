@@ -4,6 +4,7 @@ import { StatisticsRoutes } from 'src/routes/statisticsRoutes'
 import { GenaRoutes } from 'src/routes/genaRoutes'
 import { UsersRoutes } from 'src/routes/usersRoutes'
 import { ProductsRoutes } from 'src/routes/productsRoutes'
+import { SalesChannelsRoutes } from 'src/routes/salesChannelsRoutes'
 
 export interface Link {
   title: string
@@ -21,6 +22,7 @@ export const RoutesList: () => any[] = () => {
   return [
     ...ProjectsRoutes(),
     ...ProductsRoutes(),
+    ...SalesChannelsRoutes(),
     ...StatisticsRoutes(),
     ...GenaRoutes(),
     ...UsersRoutes(),

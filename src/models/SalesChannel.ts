@@ -4,6 +4,7 @@ export interface SalesChannelFields extends BaseModelProps {
   name: string
   key_name: string
   description: string
+  image: string
 }
 
 export class SalesChannelModel extends BaseModel {

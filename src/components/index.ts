@@ -32,6 +32,7 @@ export * from './_base/SourceLink'
 export * from './_base/PostgresForm'
 export * from './_base/MongoForm'
 export * from './_base/CsvForm'
+export * from './_base/InputJSON'
 
 // typography components
 export * from './_typography/Text'

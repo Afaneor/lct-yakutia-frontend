@@ -24,6 +24,7 @@ import { ProjectsUsersRoutesNames } from 'src/routes/projectsUserRoutes'
 import { AimOutlined } from '@ant-design/icons'
 import { useEntityPage } from 'src/pages/hooks/useEntityPage'
 import { ProjectsRoutesNames } from 'src/routes/projectsRoutes'
+import SettingsButton from 'src/components/projects/ProjectSettingsDropdown/ProjectSettingsDropdown'
 const EditableMarkdown = React.lazy(
   () => import('src/components/_base/EditableMarkdown/EditableMarkdown')
 )
@@ -95,6 +96,7 @@ export const ProjectPage: FCC = () => {
           title: data?.data?.name,
         },
       ]}
+      actions={<SettingsButton />}
     >
       <>
         <Row gutter={[16, 16]}>

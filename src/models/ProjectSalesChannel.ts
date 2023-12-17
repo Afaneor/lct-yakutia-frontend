@@ -16,4 +16,8 @@ export class ProjectSalesChannelModel extends BaseModel {
   static multiCreateUrl() {
     return `${G_GMP_APP_URL}/projects-sales-channels/multiple-create/`
   }
+
+  static addClientFromExcelUrl(projectSalesChannelId?: number | string) {
+    return `${G_GMP_APP_URL}/projects-sales-channels/${projectSalesChannelId}/add-client-from-xlsx-file/`
+  }
 }

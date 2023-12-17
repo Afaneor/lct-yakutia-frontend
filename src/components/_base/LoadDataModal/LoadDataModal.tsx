@@ -1,15 +1,21 @@
 import React, { useState } from 'react'
 import styles from './LoadDataModal.module.scss'
 import { FCC } from 'src/types'
-import { Modal, Tabs, Typography } from 'antd'
+import { message, Modal, Tabs, Typography } from 'antd'
 import {
   CsvForm,
   LoadDataComponent,
   MongoForm,
   PostgresForm,
 } from 'src/components'
-import { useTranslation } from 'src/hooks'
+import { useFileAsFormData, useTranslation } from 'src/hooks'
 import TabPane from 'antd/es/tabs/TabPane'
+import { data } from 'autoprefixer'
+import { useCreateItem, useExtraActionsPost } from 'src/services/base/hooks'
+import { ProjectSalesChannelModel } from 'src/models'
+import { useParams } from 'react-router-dom'
+import { AxiosResponse } from 'axios'
+import apiClient from 'src/plugins/apiClient'
 
 const { Title } = Typography
 
@@ -23,25 +29,96 @@ interface LoadDataModalProps {
   onClose: () => void
   onOk?: () => void
 }
+
+const model = ProjectSalesChannelModel
 export const LoadDataModal: FCC<LoadDataModalProps> = ({
   onOk,
   isOpen,
   onClose,
 }) => {
+  const { projectSalesChannelId } = useParams()
   const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<LoadDataModalTabs>(
     LoadDataModalTabs.FILE
   )
+  const createFormData = useFileAsFormData()
 
+  // const {
+  //   mutate: createFile,
+  // }: {
+  //   mutate: CallableFunction
+  //   isLoading: boolean
+  // } = useCreateItem(filesModel, {
+  //   headers: {
+  //     'Content-Type': 'multipart/form-data',
+  //   },
+  // })
+  // const handleCreateFile = (actions: RcCustomRequestOptions) => {
+  //   const formDataFile = handleCreateFormData(actions.file, attachTo)
+  //   createFile(formDataFile, {
+  //     onSuccess: (response: typeof AxiosResponse) => {
+  //       onUploadSuccess(response?.data)
+  //     },
+  //     onError: () => {
+  //       onUploadError?.()
+  //     },
+  //   })
+  // }
+
+  const { mutate: addClientFromXLSX } = useExtraActionsPost(
+    'addClientFromXLSX',
+    undefined,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  )
+  const createDataFromXlsx = ({ file, client_data_decoding }: any) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('client_data_decoding', client_data_decoding)
+    apiClient
+      .post(
+        `api/${model.addClientFromExcelUrl(projectSalesChannelId)}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      .then((response: any) => {
+        if (response.status === 201) {
+          message.success(`${file.name} успешно загружен`, 5)
+        } else {
+          message.error(`${file.name} не удалось загрузить.`, 5)
+        }
+      })
+      .catch((error: any) => {
+        message.error(`Произошла ошибка: ${error.message}`)
+      })
+      .finally(() => {
+        // onSuccess('ok')
+      })
+  }
+  const handleAddClientFromXLSX = (data: Record<string, any>) => {
+    createDataFromXlsx({
+      file: data.fileList[0],
+      client_data_decoding: data.jsonValue,
+    })
+  }
   const handleTabChange = (key: string) => {
     setActiveTab(key as LoadDataModalTabs)
   }
+
   return (
     <Modal
       open={isOpen}
       onOk={onOk}
       onCancel={onClose}
       confirmLoading={false}
+      footer={null}
       bodyStyle={{ height: 'calc(80vh)', overflow: 'auto' }}
       style={{ top: 10 }}
       width='50%'
@@ -51,12 +128,8 @@ export const LoadDataModal: FCC<LoadDataModalProps> = ({
     >
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
         <TabPane tab='Файл' key={LoadDataModalTabs.FILE}>
-          <Title level={2}>{t('Загрузка данных из файла .csv')}</Title>
-          <CsvForm
-            onDataUploaded={() => {
-              console.log('onDataUploaded for CSV')
-            }}
-          />
+          <Title level={2}>{t('Загрузка данных из файла .xlsx')}</Title>
+          <CsvForm onDataUploaded={handleAddClientFromXLSX} />
         </TabPane>
         <TabPane tab='Postgres' key={LoadDataModalTabs.POSTGRES}>
           <Title level={2}>{t('Загрузка данных - Postgres')}</Title>

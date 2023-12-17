@@ -4,7 +4,7 @@ import { FCC } from 'src/types'
 import { LoadDataComponent } from 'src/components'
 
 interface CsvFormProps {
-  onDataUploaded: () => void
+  onDataUploaded: (data: Record<string, any>) => void
 }
 
 export const CsvForm: FCC<CsvFormProps> = ({ onDataUploaded }) => {

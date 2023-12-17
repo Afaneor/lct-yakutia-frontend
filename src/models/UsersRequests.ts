@@ -1,13 +1,10 @@
 import {
   BaseModel,
   BaseModelProps,
-  ProfilesModelProps,
+  LLM_MODEL,
   ProjectSalesChannelFields,
-  ProjectSalesChannelModel,
-  USERS_REQUESTS_URL,
   UsersModelProps,
 } from 'src/models'
-import { PermissionRulesProps } from 'src/services/base/types'
 
 export interface UsersRequestsModelProps extends BaseModelProps {
   project_sale_channel: ProjectSalesChannelFields
@@ -27,6 +24,6 @@ export class UsersRequestsModel extends BaseModel {
   static modelName = 'users_requests'
 
   static url() {
-    return `${USERS_REQUESTS_URL}/users-requests/`
+    return `${LLM_MODEL}/requests-data/`
   }
 }

@@ -38,20 +38,6 @@ export const ProjectsRoutes = () => {
       isNavLink: true,
     },
     {
-      title: t('Каналы'), // TODO: переименовать в "Каналы связи"
-      to: 'channels',
-      component: <Projects />,
-      icon: <RadarChartOutlined />,
-      isNavLink: true,
-    },
-    {
-      title: t('Статистика'),
-      to: 'statistics',
-      component: <Projects />,
-      icon: <RadarChartOutlined />,
-      isNavLink: true,
-    },
-    {
       title: t('Проект'),
       to: `/${ProjectsRoutesNames.PROJECTS}/:id`,
       component: <Project />,

@@ -10,6 +10,7 @@ export interface BaseModelProps {
 
 export const G_GMP_APP_URL = 'g-gmp'
 export const USERS_REQUESTS_URL = 'user-request'
+export const LLM_MODEL = 'llm-model'
 
 export class BaseModel {
   static modelName = 'base'
