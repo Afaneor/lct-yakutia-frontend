@@ -108,14 +108,14 @@ export const RequestsPage: FCC = () => {
     },
   })
 
-  const { mutate: createOffers } = useExtraActionsPost('createOffers')
+  const { mutate: createOffers, isLoading: isLoadingCreateOffer } =
+    useExtraActionsPost('createOffers')
   const handleCreateOffers = () => {
     createOffers(
       {
         url: MessagesModel.multipleCreationUrl(),
         record: {
-          ids: selections.selectedRowKeys,
-          project_sale_channel: projectSalesChannelId,
+          requests_data: selections.selectedRowKeys,
         },
       },
       {
@@ -166,6 +166,7 @@ export const RequestsPage: FCC = () => {
             onUpdate={(text) => handleUpdate('prompt', text)}
           />
           <UsersPageActions
+            isLoading={isLoadingCreateOffer}
             isDisabled={selections?.selectedRowKeys?.length === 0}
             onUpload={handleIsOpen}
             onCreate={handleCreateOffers}

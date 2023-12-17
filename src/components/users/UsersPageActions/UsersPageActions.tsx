@@ -8,11 +8,13 @@ interface UsersPageActionsProps {
   onUpload?: () => void
   onCreate?: () => void
   isDisabled?: boolean
+  isLoading?: boolean
 }
 export const UsersPageActions: FCC<UsersPageActionsProps> = ({
   onUpload,
   isDisabled,
   onCreate,
+  isLoading,
 }) => {
   const { t } = useTranslation()
   return (
@@ -22,6 +24,7 @@ export const UsersPageActions: FCC<UsersPageActionsProps> = ({
       </Button>
       <Tooltip title={isDisabled ? t('Выберите хотя бы одну запись') : ''}>
         <Button
+          loading={isLoading}
           type={'primary'}
           icon={<ExperimentOutlined />}
           onClick={onCreate}
